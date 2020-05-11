@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+
 public class InsomniaGUI
 {
     private JFrame frame;
@@ -58,12 +59,13 @@ public class InsomniaGUI
         frame.add(split2, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        InsomniaMenuBar();
-        InsomniaRequester();
-        InsomniaRequest();
+        insomniaMenuBar();
+        insomniaRequester();
+        insomniaRequest();
+        insomniaResponse();
     }
 
-    public void InsomniaMenuBar()
+    public void insomniaMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
         frame.setJMenuBar(menuBar);
@@ -177,7 +179,7 @@ public class InsomniaGUI
         help.add(helper);
     }
 
-    public void InsomniaRequester()
+    public void insomniaRequester()
     {
         cardLayout = new CardLayout();
         JPanel requesterCenter = new JPanel();
@@ -187,11 +189,17 @@ public class InsomniaGUI
         requesterCenter.setOpaque(true);
 
         JPanel formPanel = new JPanel();
+        makeFormPanel(formPanel);
         JPanel jsonPanel = new JPanel();
+        makeJsonPanel(jsonPanel);
         JPanel binaryPanel = new JPanel();
+
         JPanel bearerPanel = new JPanel();
+        makeBearerPanel(bearerPanel);
         JPanel queryPanel = new JPanel();
+
         JPanel headerPanel = new JPanel();
+        makeFormPanel(headerPanel);
 
         headerPanel.setBackground(new Color(46,47,44));
         queryPanel.setBackground(new Color(46,47,44));
@@ -229,6 +237,10 @@ public class InsomniaGUI
         JButton send = new JButton("Send");
         send.setPreferredSize(new Dimension(60,40));
         getTextSend.add(send);
+
+        JButton save = new JButton("Save");
+        save.setPreferredSize(new Dimension(60,40));
+        getTextSend.add(save);
 
         requesterTop.add(getTextSend);
 
@@ -307,7 +319,100 @@ public class InsomniaGUI
         });
     }
 
-    public void InsomniaRequest()
+    public void makeFormPanel(JPanel panel)
+    {
+        JPanel make = new JPanel();
+        make.setLayout(new FlowLayout(FlowLayout.LEFT));
+        make.setBackground(new Color(46,47,44));
+        make.setOpaque(true);
+        panel.add(make, BorderLayout.CENTER);
+
+        JTextArea name = new JTextArea("name");
+        name.setPreferredSize(new Dimension(200,30));
+        name.setBackground(new Color(46,47,44));
+        name.setOpaque(true);
+        name.setForeground(Color.GRAY);
+        name.setOpaque(true);
+
+        JTextArea value = new JTextArea("value");
+        value.setPreferredSize(new Dimension(200,30));
+        value.setBackground(new Color(46,47,44));
+        value.setOpaque(true);
+        value.setForeground(Color.GRAY);
+        value.setOpaque(true);
+
+        make.add(name);
+        make.add(value);
+
+        JRadioButton radioButton = new JRadioButton();
+        make.add(radioButton);
+        radioButton.setSelected(true);
+        radioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (radioButton.isSelected())
+                {
+                    name.setEnabled(true);
+                    value.setEnabled(true);
+
+                }
+                else
+                {
+                    name.setEnabled(false);
+                    value.setEnabled(false);
+                }
+            }
+        });
+
+        JButton waste = new JButton("\uD83D\uDDD1");
+        waste.setPreferredSize(new Dimension(50,30));
+        waste.setFont(new Font("SansSerif",Font.PLAIN,22));
+        waste.setBackground(new Color(46,47,44));
+        waste.setOpaque(true);
+        waste.setForeground(Color.white);
+        waste.setOpaque(true);
+        make.add(waste);
+
+        waste.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ///////////////////////////////////////////////////////////////////////////
+            }
+        });
+    }
+
+    public void makeJsonPanel(JPanel panel)
+    {
+        JPanel maker = new JPanel();
+        maker.setLayout(new FlowLayout(FlowLayout.LEFT));
+        maker.setBackground(new Color(46,47,44));
+        maker.setOpaque(true);
+        panel.add(maker, BorderLayout.CENTER);
+
+        JButton dot = new JButton("\uD83D\uDD34");
+        dot.setPreferredSize(new Dimension(50,30));
+        dot.setFont(new Font("SansSerif",Font.PLAIN,10));
+        dot.setBackground(new Color(46,47,44));
+        dot.setOpaque(true);
+        dot.setForeground(Color.red);
+        dot.setOpaque(true);
+        maker.add(dot);
+
+        JTextArea jsonText = new JTextArea();
+        jsonText.setBackground(new Color(46,47,44));
+        jsonText.setOpaque(true);
+        jsonText.setForeground(Color.gray);
+        jsonText.setOpaque(true);
+        jsonText.setPreferredSize(new Dimension(400,20));
+        maker.add(jsonText);
+    }
+
+    public void makeBearerPanel(JPanel panel)
+    {
+
+    }
+
+    public void insomniaRequest()
     {
         JPanel requestTop = new JPanel();
         requestTop.setLayout(new BorderLayout());
@@ -369,6 +474,79 @@ public class InsomniaGUI
         newRequest.addItem("New Folder");
         newRequest.setPreferredSize(new Dimension(80,30));
         newReq.add(newRequest);
+
+
+        newRequest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(newRequest.getSelectedItem().equals("New Request"))
+                {
+                    JFrame newReqFrame = new JFrame("New Request");
+                    newReqFrame.setLayout(new BorderLayout());
+                    newReqFrame.setVisible(true);
+                    newReqFrame.setLocation(450,70);
+                    newReqFrame.setSize(750,160);
+
+                    JPanel newReqPanel = new JPanel();
+                    newReqPanel.setLayout(new FlowLayout());
+                    newReqFrame.add(newReqPanel, BorderLayout.CENTER);
+
+                    JTextArea newReqText = new JTextArea();
+                    newReqText.setPreferredSize(new Dimension(600,40));
+                    newReqPanel.add(newReqText);
+
+                    JComboBox<String> comboGet = new JComboBox<>();
+                    comboGet.addItem("GET");
+                    comboGet.addItem("POST");
+                    comboGet.addItem("PUT");
+                    comboGet.addItem("PATCH");
+                    comboGet.addItem("DELETE");
+                    comboGet.setPreferredSize(new Dimension(100,40));
+                    newReqPanel.add(comboGet);
+
+                    JPanel tipCreate = new JPanel();
+                    tipCreate.setLayout(new FlowLayout());
+                    newReqFrame.add(tipCreate ,BorderLayout.SOUTH);
+
+                    JLabel tip= new JLabel("*Tip: paste Curl command into URL afterwards to import it");
+                    tipCreate.add(tip);
+
+                    JButton create = new JButton("Create");
+                    create.setPreferredSize(new Dimension(100,40));
+                    tipCreate.add(create);
+
+                    JLabel name = new JLabel("      Name");
+                    newReqFrame.add(name, BorderLayout.NORTH);
+                }
+                else
+                {
+                    JFrame newFolderFrame = new JFrame("New Folder");
+                    newFolderFrame.setLayout(new BorderLayout());
+                    newFolderFrame.setVisible(true);
+                    newFolderFrame.setLocation(450,70);
+                    newFolderFrame.setSize(750,120);
+
+                    JPanel newFolderPanel = new JPanel();
+                    newFolderPanel.setLayout(new FlowLayout());
+                    newFolderFrame.add(newFolderPanel, BorderLayout.CENTER);
+
+                    JTextArea newFolderText = new JTextArea();
+                    newFolderText.setPreferredSize(new Dimension(600,40));
+                    newFolderPanel.add(newFolderText);
+
+                    JButton createFol = new JButton("Create");
+                    createFol.setPreferredSize(new Dimension(100,40));
+                    newFolderPanel.add(createFol);
+
+                    JLabel name = new JLabel("      Name");
+                    newFolderFrame.add(name, BorderLayout.NORTH);
+                }
+            }
+        });
+    }
+
+    public void insomniaResponse()
+    {
 
     }
 }
