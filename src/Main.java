@@ -1,14 +1,20 @@
 import javax.swing.*;
 
-public class Main
-{
-    public static void main(String[] args)
-    {
+public class Main {
+    public static void main(String[] args) {
         try
         {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
+            {
+                if ("Nimbus".equals(info.getName()))
+                {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
         }
-        catch (Exception e)
+        catch(Exception e)
         {
             // If Nimbus is not available, you can set the GUI to another look and feel.
         }

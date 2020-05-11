@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -10,6 +12,7 @@ public class InsomniaGUI
 {
     private JFrame frame;
     private JPanel request, requester, response;
+    private CardLayout cardLayout;
 
     public JFrame getFrame() { return frame; }
     public void setFrame(JFrame frame) { this.frame = frame; }
@@ -29,9 +32,8 @@ public class InsomniaGUI
         frame = new JFrame("Insomnia");
         frame.setLayout(new BorderLayout());
         frame.setVisible(true);
-        frame.setLocation(100,100);
-        frame.setSize(1200,500);
-
+        frame.setLocation(60,70);
+        frame.setSize(1400,700);
 
         request = new JPanel();
         requester = new JPanel();
@@ -41,11 +43,11 @@ public class InsomniaGUI
         requester.setLayout(new BorderLayout());
         response.setLayout(new BorderLayout());
 
-        request.setBackground(Color.DARK_GRAY);
+        request.setBackground(new Color(46,47,44));
         request.setOpaque(true);
-        requester.setBackground(Color.DARK_GRAY);
+        requester.setBackground(new Color(46,47,44));
         request.setOpaque(true);
-        response.setBackground(Color.DARK_GRAY);
+        response.setBackground(new Color(46,47,44));
         request.setOpaque(true);
 
         JSplitPane split1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, request, requester);
@@ -57,6 +59,8 @@ public class InsomniaGUI
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         InsomniaMenuBar();
+        InsomniaRequester();
+        InsomniaRequest();
     }
 
     public void InsomniaMenuBar()
@@ -72,16 +76,17 @@ public class InsomniaGUI
         options.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////////////////////
             }
         });
+        options.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
         application.add(options);
 
-        JMenuItem exit = new JMenuItem("Exit / Hide on system tray");
+        JMenuItem exit = new JMenuItem("Exit/Hide on system tray");
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();/////////////////////////////////////////////////
+                frame.dispose();////////////////////////////////////////////////////////////
             }
         });
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
@@ -95,24 +100,12 @@ public class InsomniaGUI
         toggleFullScreen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //////////////////////////////////////////
-                Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-
-                final int screen_Width = dim.width;
-                final int screen_Height = dim.height;
-
-                //Create a JFrame
-                JFrame frame = new JFrame();
-
-                frame.setSize(screen_Width, screen_Height);
-
-                //set properties for the JFrame
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-                frame.setUndecorated(true);
-                frame.setLayout(null);
-
-                frame.setVisible(true);
+                /////////////////////////////////////////////////////////////////////
+//                Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+//                final int screen_Width = dim.width;
+//                final int screen_Height = dim.height;
+//                frame.setSize(screen_Width, screen_Height);
+//                frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 //                GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
 //                GraphicsDevice device = graphics.getDefaultScreenDevice();
 //                frame.setUndecorated(true);
@@ -122,15 +115,260 @@ public class InsomniaGUI
 //                frame.setExtendedState(JFrame.NORMAL);
             }
         });
+        toggleFullScreen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.ALT_MASK));
         view.add(toggleFullScreen);
 
         JMenuItem toggleSidebar = new JMenuItem("Toggle Sidebar");
         toggleSidebar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                ///////////////////////////////////////////////////////////////////////////////////////////////
             }
         });
+        toggleSidebar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
         view.add(toggleSidebar);
+
+        JMenu help = new JMenu("Help");
+        application.setMnemonic('H');
+        menuBar.add(help);
+
+        JMenuItem about = new JMenuItem("About");
+        about.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame aboutFrame = new JFrame();
+                aboutFrame.setLayout(new BorderLayout());
+                aboutFrame.setVisible(true);
+                aboutFrame.setLocation(600,350);
+                aboutFrame.setSize(300,80);
+                JPanel aboutPanel = new JPanel();
+                JLabel aboutNameLabel = new JLabel("Author : Moujan Mirjalili");
+                JLabel aboutIdLabel = new JLabel("Id : 9831140");
+                JLabel aboutMailLabel = new JLabel("Contact via moujanirjalili@gamil.com");
+                aboutNameLabel.setFont(new Font("Verdana", Font.BOLD,10));
+                aboutIdLabel.setFont(new Font("Verdana", Font.BOLD,10));
+                aboutMailLabel.setFont(new Font("Verdana", Font.BOLD,10));
+                aboutPanel.add(aboutNameLabel);
+                aboutPanel.add(aboutIdLabel);
+                aboutPanel.add(aboutMailLabel);
+                aboutPanel.setBackground(Color.gray);
+                aboutFrame.add(aboutPanel, BorderLayout.CENTER);
+
+            }
+        });
+        about.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK));
+        help.add(about);
+
+        JMenuItem helper = new JMenuItem("Help");
+        helper.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame helpFrame = new JFrame();
+                helpFrame.setLayout(new BorderLayout());
+                helpFrame.setVisible(true);
+                helpFrame.setLocation(600,350);
+                helpFrame.setSize(300,300);
+                JPanel helpPanel = new JPanel();
+                helpPanel.setBackground(Color.gray);
+                helpFrame.add(helpPanel, BorderLayout.CENTER);
+            }
+        });
+        helper.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, ActionEvent.ALT_MASK));
+        help.add(helper);
+    }
+
+    public void InsomniaRequester()
+    {
+        cardLayout = new CardLayout();
+        JPanel requesterCenter = new JPanel();
+        requesterCenter.setLayout(cardLayout);
+        requester.add(requesterCenter,BorderLayout.CENTER);
+        requesterCenter.setBackground(new Color(46,47,44));
+        requesterCenter.setOpaque(true);
+
+        JPanel formPanel = new JPanel();
+        JPanel jsonPanel = new JPanel();
+        JPanel binaryPanel = new JPanel();
+        JPanel bearerPanel = new JPanel();
+        JPanel queryPanel = new JPanel();
+        JPanel headerPanel = new JPanel();
+
+        headerPanel.setBackground(new Color(46,47,44));
+        queryPanel.setBackground(new Color(46,47,44));
+        bearerPanel.setBackground(new Color(46,47,44));
+        binaryPanel.setBackground(new Color(46,47,44));
+        jsonPanel.setBackground(new Color(46,47,44));
+        formPanel.setBackground(new Color(46,47,44));
+
+        requesterCenter.add(formPanel,"1");
+        requesterCenter.add(jsonPanel, "2");
+        requesterCenter.add(binaryPanel, "3");
+        requesterCenter.add(bearerPanel,"4");
+        requesterCenter.add(queryPanel,"5");
+        requesterCenter.add(headerPanel, "6");
+
+        JPanel requesterTop = new JPanel();
+        requesterTop.setLayout(new GridLayout(2,1));
+        requester.add(requesterTop,BorderLayout.NORTH);
+
+        JPanel getTextSend = new JPanel();
+        getTextSend.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JComboBox<String> comboGet = new JComboBox<>();
+        comboGet.addItem("GET");
+        comboGet.addItem("POST");
+        comboGet.addItem("PUT");
+        comboGet.addItem("PATCH");
+        comboGet.addItem("DELETE");
+        comboGet.setPreferredSize(new Dimension(60,40));
+        getTextSend.add(comboGet);
+
+        JTextArea urlAddress = new JTextArea();
+        urlAddress.setPreferredSize(new Dimension(270,40));
+        getTextSend.add(urlAddress);
+
+        JButton send = new JButton("Send");
+        send.setPreferredSize(new Dimension(60,40));
+        getTextSend.add(send);
+
+        requesterTop.add(getTextSend);
+
+        JPanel tabs = new JPanel();
+        tabs.setLayout(new FlowLayout(FlowLayout.LEFT));
+        tabs.setBackground(new Color(46,47,44));
+        tabs.setOpaque(true);
+        tabs.setBorder(new LineBorder(Color.gray));
+        tabs.setOpaque(true);
+
+        JComboBox<String> comboBody = new JComboBox<>();
+        comboBody.setBackground(new Color(46,47,44));
+        comboBody.setOpaque(true);
+        comboBody.addItem("Form URL Encoded");
+        comboBody.addItem("JSON");
+        comboBody.addItem("Binary File");
+        comboBody.setPreferredSize(new Dimension(100,40));
+        tabs.add(comboBody);
+
+        JButton authBearer = new JButton("Auth Bearer Token");
+        authBearer.setBackground(new Color(46,47,44));
+        authBearer.setOpaque(true);
+        authBearer.setForeground(Color.white);
+        authBearer.setOpaque(true);
+        authBearer.setPreferredSize(new Dimension(100,40));
+        tabs.add(authBearer);
+
+        JButton query = new JButton("Query");
+        query.setBackground(new Color(46,47,44));
+        query.setOpaque(true);
+        query.setForeground(Color.white);
+        query.setOpaque(true);
+        query.setPreferredSize(new Dimension(70,40));
+        tabs.add(query);
+
+        JButton header = new JButton("Header");
+        header.setBackground(new Color(46,47,44));
+        header.setOpaque(true);
+        header.setForeground(Color.white);
+        header.setOpaque(true);
+        header.setPreferredSize(new Dimension(70,40));
+        tabs.add(header);
+
+        requesterTop.add(tabs);
+
+        header.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(requesterCenter,"6");
+            }
+        });
+
+        query.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(requesterCenter,"5");
+            }
+        });
+
+        authBearer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(requesterCenter,"4");
+            }
+        });
+
+        comboBody.addActionListener (new ActionListener () {
+            public void actionPerformed(ActionEvent e) {
+                if(comboBody.getSelectedItem().equals("Binary File"))
+                    cardLayout.show(requesterCenter,"3");
+                else if(comboBody.getSelectedItem().equals("JSON"))
+                    cardLayout.show(requesterCenter,"2");
+                else if(comboBody.getSelectedItem().equals("Form URL Encoded"))
+                    cardLayout.show(requesterCenter,"1");
+            }
+        });
+    }
+
+    public void InsomniaRequest()
+    {
+        JPanel requestTop = new JPanel();
+        requestTop.setLayout(new BorderLayout());
+        request.add(requestTop,BorderLayout.NORTH);
+
+        JLabel purpleInsomnia = new JLabel();
+        purpleInsomnia.setText("  Insomnia");
+        purpleInsomnia.setMinimumSize(new Dimension(100,40));
+        purpleInsomnia.setFont(new Font("SansSerif", Font.BOLD, 30));
+        purpleInsomnia.setForeground(Color.white);
+        purpleInsomnia.setOpaque(true);
+        purpleInsomnia.setSize(new Dimension(100,30));
+        purpleInsomnia.setBackground(new Color(102,96,178));
+        purpleInsomnia.setOpaque(true);
+        requestTop.add(purpleInsomnia,BorderLayout.NORTH);
+
+        JPanel requestInsomnia = new JPanel();
+        requestInsomnia.setLayout(new BorderLayout());
+        requestTop.add(requestInsomnia, BorderLayout.CENTER);
+
+        JPanel gridReq = new JPanel();
+        gridReq.setLayout(new GridLayout(1,2));
+        requestInsomnia.add(gridReq, BorderLayout.NORTH);
+        requestInsomnia.setBorder(new LineBorder(Color.gray));
+        requestInsomnia.setOpaque(true);
+
+        JButton noEnvironment = new JButton("No Environment");
+        noEnvironment.setBackground(new Color(46,47,44));
+        noEnvironment.setOpaque(true);
+        noEnvironment.setForeground(Color.white);
+        noEnvironment.setOpaque(true);
+        gridReq.add(noEnvironment);
+
+        JButton cookies = new JButton("Cookies");
+        cookies.setBackground(new Color(46,47,44));
+        cookies.setOpaque(true);
+        cookies.setForeground(Color.white);
+        cookies.setOpaque(true);
+        gridReq.add(cookies);
+
+        JPanel newReq = new JPanel();
+        newReq.setLayout(new FlowLayout(FlowLayout.LEFT));
+        requestInsomnia.add(newReq,BorderLayout.CENTER);
+        newReq.setBackground(new Color(46,47,44));
+        newReq.setOpaque(true);
+
+        JTextArea filter = new JTextArea();
+        filter.setBackground(new Color(46,47,44));
+        filter.setOpaque(true);
+        filter.setForeground(Color.white);
+        filter.setOpaque(true);
+        filter.setPreferredSize(new Dimension(200,30));
+        newReq.add(filter);
+
+        JComboBox<String> newRequest = new JComboBox<>();
+        newRequest.setBackground(new Color(46,47,44));
+        newRequest.setOpaque(true);
+        newRequest.addItem("New Request");
+        newRequest.addItem("New Folder");
+        newRequest.setPreferredSize(new Dimension(80,30));
+        newReq.add(newRequest);
+
     }
 }
