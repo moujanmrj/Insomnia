@@ -187,8 +187,6 @@ public class InsomniaGUI
         requesterCenter.setOpaque(true);
 
         JPanel formPanel = new JPanel();
-        BoxLayout boxlayout = new BoxLayout(formPanel, BoxLayout.Y_AXIS);
-        formPanel.setLayout(boxlayout);
         makeFormPanel(formPanel);
 
         JPanel jsonPanel = new JPanel();
@@ -202,8 +200,6 @@ public class InsomniaGUI
         JPanel queryPanel = new JPanel();
 
         JPanel headerPanel = new JPanel();
-        BoxLayout boxlayout1 = new BoxLayout(headerPanel, BoxLayout.Y_AXIS);
-        headerPanel.setLayout(boxlayout1);
         makeFormPanel(headerPanel);
 
         headerPanel.setBackground(new Color(46,47,44));
@@ -326,6 +322,9 @@ public class InsomniaGUI
 
     public void makeFormPanel(JPanel panel)
     {
+        BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+        panel.setLayout(boxlayout);
+
         JPanel make = new JPanel();
         make.setLayout(new FlowLayout(FlowLayout.LEFT));
         make.setBackground(new Color(46,47,44));
@@ -418,11 +417,87 @@ public class InsomniaGUI
 
     public void makeBearerPanel(JPanel panel)
     {
+        panel.setLayout(new GridLayout(15,1));
+
         JPanel maker = new JPanel();
         maker.setLayout(new FlowLayout(FlowLayout.LEFT));
         maker.setBackground(new Color(46,47,44));
         maker.setOpaque(true);
-        panel.add(maker, BorderLayout.CENTER);
+
+        JPanel make = new JPanel();
+        make.setLayout(new FlowLayout(FlowLayout.LEFT));
+        make.setBackground(new Color(46,47,44));
+        make.setOpaque(true);
+
+        JLabel token = new JLabel("  TOKEN  ");
+        token.setFont(new Font("Arial",Font.PLAIN,13));
+        token.setBackground(new Color(46,47,44));
+        token.setOpaque(true);
+        token.setForeground(Color.gray);
+        token.setOpaque(true);
+        maker.add(token);
+
+        JTextArea tokenText = new JTextArea();
+        tokenText.setBackground(new Color(46,47,44));
+        tokenText.setOpaque(true);
+        tokenText.setForeground(Color.gray);
+        tokenText.setOpaque(true);
+        tokenText.setPreferredSize(new Dimension(410,30));
+        maker.add(tokenText);
+
+        JLabel prefix = new JLabel("  PREFIX? ");
+        prefix.setFont(new Font("Arial",Font.PLAIN,13));
+        prefix.setBackground(new Color(46,47,44));
+        prefix.setOpaque(true);
+        prefix.setForeground(Color.gray);
+        prefix.setOpaque(true);
+        prefix.setToolTipText("Prefix to use when sending the Authorization header. Defaults to Bearer.");
+        make.add(prefix);
+
+        JTextArea prefixText = new JTextArea();
+        prefixText.setBackground(new Color(46,47,44));
+        prefixText.setOpaque(true);
+        prefixText.setForeground(Color.gray);
+        prefixText.setOpaque(true);
+        prefixText.setPreferredSize(new Dimension(405,30));
+        make.add(prefixText);
+
+        JPanel making = new JPanel();
+        making.setLayout(new FlowLayout(FlowLayout.LEFT));
+        making.setBackground(new Color(46,47,44));
+        making.setOpaque(true);
+
+        JLabel enabled = new JLabel("  ENABLED  ");
+        enabled.setFont(new Font("Arial",Font.PLAIN,13));
+        enabled.setBackground(new Color(46,47,44));
+        enabled.setOpaque(true);
+        enabled.setForeground(Color.gray);
+        enabled.setOpaque(true);
+        making.add(enabled);
+
+        JRadioButton radioButton = new JRadioButton();
+        making.add(radioButton);
+        radioButton.setSelected(true);
+        radioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (radioButton.isSelected())
+                {
+                    prefixText.setEnabled(true);
+                    tokenText.setEnabled(true);
+
+                }
+                else
+                {
+                    prefixText.setEnabled(false);
+                    tokenText.setEnabled(false);
+                }
+            }
+        });
+
+        panel.add(maker);
+        panel.add(make);
+        panel.add(making);
     }
 
     public void insomniaRequest()
