@@ -4,9 +4,7 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
 
 public class InsomniaGUI
@@ -189,16 +187,23 @@ public class InsomniaGUI
         requesterCenter.setOpaque(true);
 
         JPanel formPanel = new JPanel();
+        BoxLayout boxlayout = new BoxLayout(formPanel, BoxLayout.Y_AXIS);
+        formPanel.setLayout(boxlayout);
         makeFormPanel(formPanel);
+
         JPanel jsonPanel = new JPanel();
         makeJsonPanel(jsonPanel);
+
         JPanel binaryPanel = new JPanel();
 
         JPanel bearerPanel = new JPanel();
         makeBearerPanel(bearerPanel);
+
         JPanel queryPanel = new JPanel();
 
         JPanel headerPanel = new JPanel();
+        BoxLayout boxlayout1 = new BoxLayout(headerPanel, BoxLayout.Y_AXIS);
+        headerPanel.setLayout(boxlayout1);
         makeFormPanel(headerPanel);
 
         headerPanel.setBackground(new Color(46,47,44));
@@ -376,27 +381,31 @@ public class InsomniaGUI
         waste.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ///////////////////////////////////////////////////////////////////////////
+                panel.remove(make);
+                panel.revalidate();
+                panel.repaint();
             }
         });
+
+//        value.addMouseListener(new MouseAdapter() {
+//            public void mouseClicked(MouseEvent me) {
+//                makeFormPanel(panel);
+//            }
+//        });
     }
+
 
     public void makeJsonPanel(JPanel panel)
     {
-        JPanel maker = new JPanel();
-        maker.setLayout(new FlowLayout(FlowLayout.LEFT));
-        maker.setBackground(new Color(46,47,44));
-        maker.setOpaque(true);
-        panel.add(maker, BorderLayout.CENTER);
+        panel.setLayout(new BorderLayout());
 
-        JButton dot = new JButton("\uD83D\uDD34");
-        dot.setPreferredSize(new Dimension(50,30));
+        JLabel dot = new JLabel("    \uD83D\uDD34");
         dot.setFont(new Font("SansSerif",Font.PLAIN,10));
         dot.setBackground(new Color(46,47,44));
         dot.setOpaque(true);
         dot.setForeground(Color.red);
         dot.setOpaque(true);
-        maker.add(dot);
+        panel.add(dot, BorderLayout.NORTH);
 
         JTextArea jsonText = new JTextArea();
         jsonText.setBackground(new Color(46,47,44));
@@ -404,12 +413,16 @@ public class InsomniaGUI
         jsonText.setForeground(Color.gray);
         jsonText.setOpaque(true);
         jsonText.setPreferredSize(new Dimension(400,20));
-        maker.add(jsonText);
+        panel.add(jsonText,BorderLayout.CENTER);
     }
 
     public void makeBearerPanel(JPanel panel)
     {
-
+        JPanel maker = new JPanel();
+        maker.setLayout(new FlowLayout(FlowLayout.LEFT));
+        maker.setBackground(new Color(46,47,44));
+        maker.setOpaque(true);
+        panel.add(maker, BorderLayout.CENTER);
     }
 
     public void insomniaRequest()
