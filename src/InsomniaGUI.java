@@ -214,20 +214,21 @@ public class InsomniaGUI
         toggleFullScreen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                /////////////////////////////////////////////////////////////////////
-
-//                Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-//                final int screen_Width = dim.width;
-//                final int screen_Height = dim.height;
-//                frame.setSize(screen_Width, screen_Height);
-//                frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-//                GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//                GraphicsDevice device = graphics.getDefaultScreenDevice();
-//                frame.setUndecorated(true);
-//                frame.setResizable(false);
-//                device.setFullScreenWindow(frame);
-//                frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//                frame.setExtendedState(JFrame.NORMAL);
+                if (e.getSource().equals(toggleFullScreen))
+                {
+                    frame.dispose();
+                    if (!frame.isUndecorated())
+                    {
+                        frame.setUndecorated(true);
+                        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    }
+                    else
+                    {
+                        frame.setUndecorated(false);
+                        frame.setExtendedState(JFrame.NORMAL);
+                    }
+                    frame.setVisible(true);
+                }
             }
         });
         toggleFullScreen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.ALT_MASK));
@@ -905,6 +906,7 @@ public class InsomniaGUI
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             createRequests(comboGet,newReqText);
+                            newReqFrame.dispose();
                         }
                     });
                 }
