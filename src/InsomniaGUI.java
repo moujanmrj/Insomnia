@@ -10,17 +10,20 @@ import java.util.ArrayList;
 /**
  * this class has all the gui and some actions but it's gonna change into multiple classes in the future
  *
- *
  * @author Moujan Mirjalili
  * @version  2020
  */
 
 public class InsomniaGUI
 {
+    //the main frame
     private JFrame frame;
+    //the three main panels
     private JPanel request, requester, response;
     private CardLayout cardLayout, cardLayout1;
+    //these show if the app options are on or off
     private boolean hiding = false, following = false;
+
 
     private ArrayList<JPanel> headerList = new ArrayList<>();
     private ArrayList<JPanel> queryList = new ArrayList<>();
@@ -28,24 +31,54 @@ public class InsomniaGUI
 
     private ArrayList<Request> requestsOfInsomnia = new ArrayList<>();
 
-    public void setRequestsOfInsomnia(ArrayList<Request> requestsOfInsomnia) { this.requestsOfInsomnia = requestsOfInsomnia; }
+
+    /**
+     * gets list of request
+     * @return list of request
+     */
     public ArrayList<Request> getRequestsOfInsomnia() { return requestsOfInsomnia; }
-
-    public void setHeaderList(ArrayList<JPanel> headerList) { this.headerList = headerList; }
+    /**
+     * gets list of header
+     * @return list of header
+     */
     public ArrayList<JPanel> getHeaderList() { return headerList; }
-
-    public void setQueryList(ArrayList<JPanel> queryList) { this.queryList = queryList; }
+    /**
+     * gets list of query
+     * @return list of query
+     */
     public ArrayList<JPanel> getQueryList() { return queryList; }
-
-    public void setFormList(ArrayList<JPanel> formList) { this.formList = formList; }
+    /**
+     * gets list of form
+     * @return list of form
+     */
     public ArrayList<JPanel> getFormList() { return formList; }
 
+    /**
+     * sets if the system is to hide in the tray
+     * @param hiding tray system boolean
+     */
     public void setHiding(boolean hiding) { this.hiding = hiding; }
+    /**
+     * returns the system tray option
+     * @return  tray system boolean
+     */
     public boolean isHiding() { return hiding; }
 
+    /**
+     * sets follow redirect option
+     * @param following follow redirect option boolean
+     */
     public void setFollowing(boolean following) { this.following = following; }
+    /**
+     * returns follow redirect option
+     * @return  tray system boolean
+     */
     public boolean isFollowing() { return following; }
 
+    /**
+     * this is the constructor of the gui and makes the main frames
+     * and panels and sets them
+     */
     public InsomniaGUI()
     {
         frame = new JFrame("Insomnia");
@@ -85,6 +118,9 @@ public class InsomniaGUI
         insomniaResponse();
     }
 
+    /**
+     * this is for making the menu of the program
+     */
     public void insomniaMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
@@ -256,6 +292,9 @@ public class InsomniaGUI
         help.add(helper);
     }
 
+    /**
+     * this handles the hide in tray option
+     */
     public void hideInTray()
     {
         if (!SystemTray.isSupported()) {
@@ -300,6 +339,9 @@ public class InsomniaGUI
         }
     }
 
+    /**
+     * this makes the middle requester part of the program
+     */
     public void insomniaRequester()
     {
         cardLayout = new CardLayout();
@@ -445,6 +487,11 @@ public class InsomniaGUI
         });
     }
 
+    /**
+     * this makes the form/header/query panel in the (middle) requester area
+     * @param panel form/header/query panel
+     * @param nameOfPanel name of the panel (form/header/query)
+     */
     public void makeFormPanel(JPanel panel, String nameOfPanel)
     {
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
@@ -576,8 +623,41 @@ public class InsomniaGUI
                 }
             }
         });
+
+        name.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent me) {
+                adding(panel,make,nameOfPanel);
+                switch (nameOfPanel)
+                {
+                    case "FORM":
+                        if (getFormList().size()-1 == getFormList().indexOf(make))
+                        {
+                            getFormList().add(make);
+                        }
+                        break;
+                    case "HEADER":
+                        if (getHeaderList().size()-1 == getHeaderList().indexOf(make))
+                        {
+                            getHeaderList().add(make);
+                        }
+                        break;
+                    case "QUERY":
+                        if (getQueryList().size()-1 == getQueryList().indexOf(make))
+                        {
+                            getQueryList().add(make);
+                        }
+                        break;
+                }
+            }
+        });
     }
 
+    /**
+     * this handles the deleting options in the form/header/query panel
+     * @param waste the delete button
+     * @param panel form/header/query panel
+     * @param make the part(panel) which is going to be removed
+     */
     public void delete(JButton waste, JPanel panel, JPanel make)
     {
         panel.remove(make);
@@ -585,6 +665,12 @@ public class InsomniaGUI
         panel.repaint();
     }
 
+    /**
+     * this handles the adding options in the form/header/query panel
+     * @param panel form/header/query panel
+     * @param make the part(panel) which is going to be added
+     * @param nameOfPanel name of the panel (form/header/query)
+     */
     public void adding( JPanel panel, JPanel make, String nameOfPanel)
     {
         makeFormPanel(panel, nameOfPanel);
@@ -592,6 +678,10 @@ public class InsomniaGUI
         panel.repaint();
     }
 
+    /**
+     * this makes the JSON panel in the (middle) requester part
+     * @param panel the JSON panel
+     */
     public void makeJsonPanel(JPanel panel)
     {
         panel.setLayout(new BorderLayout());
@@ -613,6 +703,10 @@ public class InsomniaGUI
         panel.add(jsonText,BorderLayout.CENTER);
     }
 
+    /**
+     * this makes the bearer panel in the (middle) requester part
+     * @param panel the bearer panel
+     */
     public void makeBearerPanel(JPanel panel)
     {
         panel.setLayout(new GridLayout(15,1));
@@ -698,6 +792,9 @@ public class InsomniaGUI
         panel.add(making);
     }
 
+    /**
+     * this makes the insomnia request part
+     */
     public void insomniaRequest()
     {
         JPanel requestTop = new JPanel();
@@ -838,6 +935,11 @@ public class InsomniaGUI
         });
     }
 
+    /**
+     * this creates the requests
+     * @param comboBox
+     * @param textName
+     */
     public void createRequests(JComboBox<String> comboBox, JTextArea textName)
     {
         JPanel requestsCenter = new JPanel();
@@ -848,7 +950,7 @@ public class InsomniaGUI
         String type = String.valueOf(comboBox.getSelectedItem());
         String name = textName.getText();
         Request theNewRequest = new Request(type, name);
-        requestsOfInsomnia.add(theNewRequest);
+        getRequestsOfInsomnia().add(theNewRequest);
 
         requestsCenter.setBackground(new Color(46,47,44));
         requestsCenter.setOpaque(true);
@@ -897,7 +999,7 @@ public class InsomniaGUI
                 theType.setOpaque(true);
                 break;
         }
-       
+
         theName.setPreferredSize(new Dimension(150,30));
         theType.setPreferredSize(new Dimension(100,30));
 
@@ -910,6 +1012,9 @@ public class InsomniaGUI
         requestsCenter.repaint();
     }
 
+    /**
+     * this makes the insomnia response part
+     */
     public void insomniaResponse()
     {
         cardLayout1 = new CardLayout();
@@ -993,6 +1098,10 @@ public class InsomniaGUI
         });
     }
 
+    /**
+     * this makes the header panel in the (right) response part
+     * @param panel the header panel
+     */
     public void makeHeaderPanel(JPanel panel)
     {
         panel.setLayout(new BorderLayout());
@@ -1031,6 +1140,11 @@ public class InsomniaGUI
             }
         });
     }
+
+    /**
+     * this makes the message Body in the (right) response part
+     * @param panel the message Body panel
+     */
     public void makeMessageBodyPanel(JPanel panel)
     {
         panel.setLayout(new BorderLayout());
