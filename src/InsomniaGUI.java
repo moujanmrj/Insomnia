@@ -538,26 +538,24 @@ public class InsomniaGUI
 
         value.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent me) {
+                adding(panel,make,nameOfPanel);
                 switch (nameOfPanel)
                 {
                     case "FORM":
                         if (getFormList().size()-1 == getFormList().indexOf(make))
                         {
-                            adding(panel,make, "FORM");
                             getFormList().add(make);
                         }
                         break;
                     case "HEADER":
                         if (getHeaderList().size()-1 == getHeaderList().indexOf(make))
                         {
-                            adding(panel,make,"HEADER");
                             getHeaderList().add(make);
                         }
                         break;
                     case "QUERY":
                         if (getQueryList().size()-1 == getQueryList().indexOf(make))
                         {
-                            adding(panel,make,"QUERY");
                             getQueryList().add(make);
                         }
                         break;
@@ -941,4 +939,6 @@ public class InsomniaGUI
         });
 
     }
+
+
 }
