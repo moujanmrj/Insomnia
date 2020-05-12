@@ -41,6 +41,8 @@ public class InsomniaGUI
         frame.setVisible(true);
         frame.setLocation(60,70);
         frame.setSize(1420,720);
+        ImageIcon appIcon = new ImageIcon("insomniaIcon.png");
+        frame.setIconImage(appIcon.getImage());
 
         request = new JPanel();
         requester = new JPanel();
@@ -789,6 +791,13 @@ public class InsomniaGUI
 
                     JLabel name = new JLabel("      Name");
                     newReqFrame.add(name, BorderLayout.NORTH);
+
+                    create.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            
+                        }
+                    });
                 }
                 else
                 {
@@ -827,7 +836,7 @@ public class InsomniaGUI
         responseCenter.setOpaque(true);
 
         JPanel messageBodyPanel = new JPanel();
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        makeMessageBodyPanel(messageBodyPanel);
 
         JPanel headerPanel = new JPanel();
         makeHeaderPanel(headerPanel);
@@ -937,8 +946,16 @@ public class InsomniaGUI
                //////////////////////////////////////////////////////////////////
             }
         });
-
     }
-
-
+    public void makeMessageBodyPanel(JPanel panel)
+    {
+        panel.setLayout(new BorderLayout());
+        JPanel body = new JPanel();
+        body.setLayout(new FlowLayout());
+        body.setBackground(new Color(46,47,44));
+        body.setOpaque(true);
+        body.setForeground(Color.gray);
+        body.setOpaque(true);
+        panel.add(body,BorderLayout.NORTH);
+    }
 }
