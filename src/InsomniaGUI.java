@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 
 public class InsomniaGUI
@@ -13,6 +14,19 @@ public class InsomniaGUI
     private JPanel request, requester, response;
     private CardLayout cardLayout, cardLayout1;
     private boolean hiding = false, following = false;
+
+    private ArrayList<JPanel> headerList = new ArrayList<>();
+    private ArrayList<JPanel> queryList = new ArrayList<>();
+    private ArrayList<JPanel> formList = new ArrayList<>();
+
+    public void setHeaderList(ArrayList<JPanel> headerList) { this.headerList = headerList; }
+    public ArrayList<JPanel> getHeaderList() { return headerList; }
+
+    public void setQueryList(ArrayList<JPanel> queryList) { this.queryList = queryList; }
+    public ArrayList<JPanel> getQueryList() { return queryList; }
+
+    public void setFormList(ArrayList<JPanel> formList) { this.formList = formList; }
+    public ArrayList<JPanel> getFormList() { return formList; }
 
     public void setHiding(boolean hiding) { this.hiding = hiding; }
     public boolean isHiding() { return hiding; }
@@ -237,12 +251,10 @@ public class InsomniaGUI
         final PopupMenu popup = new PopupMenu();
         SystemTray tray = SystemTray.getSystemTray();
         Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Image image = toolkit.getImage("icon.png");
+        Image image = toolkit.getImage("insomniaIcon.png");
         final TrayIcon trayIcon = new TrayIcon(image, "Insomnia", popup);
-//        final TrayIcon trayIcon = new TrayIcon(new ImageIcon(getClass().getResource("/com/example/icons/32/app.png")).getImage());
-//        final SystemTray tray = SystemTray.getSystemTray();
+        trayIcon.setImageAutoSize(true);
 
-        // Create a pop-up menu components
         MenuItem aboutItem = new MenuItem("About");
         CheckboxMenuItem cb1 = new CheckboxMenuItem("Set auto size");
         CheckboxMenuItem cb2 = new CheckboxMenuItem("Set tooltip");
@@ -253,7 +265,6 @@ public class InsomniaGUI
         MenuItem noneItem = new MenuItem("None");
         MenuItem exitItem = new MenuItem("Exit");
 
-        //Add components to pop-up menu
         popup.add(aboutItem);
         popup.addSeparator();
         popup.add(cb1);
@@ -285,7 +296,7 @@ public class InsomniaGUI
         requesterCenter.setOpaque(true);
 
         JPanel formPanel = new JPanel();
-        makeFormPanel(formPanel);
+        makeFormPanel(formPanel,"FORM");
 
         JPanel jsonPanel = new JPanel();
         makeJsonPanel(jsonPanel);
@@ -297,10 +308,10 @@ public class InsomniaGUI
         makeBearerPanel(bearerPanel);
 
         JPanel queryPanel = new JPanel();
-        makeFormPanel(queryPanel);
+        makeFormPanel(queryPanel, "QUERY");
 
         JPanel headerPanel = new JPanel();
-        makeFormPanel(headerPanel);
+        makeFormPanel(headerPanel, "HEADER");
 
         headerPanel.setBackground(new Color(46,47,44));
         queryPanel.setBackground(new Color(46,47,44));
@@ -420,7 +431,7 @@ public class InsomniaGUI
         });
     }
 
-    public void makeFormPanel(JPanel panel)
+    public void makeFormPanel(JPanel panel, String nameOfPanel)
     {
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
         panel.setLayout(boxlayout);
@@ -430,6 +441,7 @@ public class InsomniaGUI
         make.setBackground(new Color(46,47,44));
         make.setOpaque(true);
         panel.add(make, BorderLayout.CENTER);
+        make.setMaximumSize(new Dimension(500,40));
 
         JTextArea name = new JTextArea("name");
         name.setPreferredSize(new Dimension(200,30));
@@ -448,9 +460,32 @@ public class InsomniaGUI
         make.add(name);
         make.add(value);
 
+        JButton waste = new JButton("\uD83D\uDDD1");
+        waste.setPreferredSize(new Dimension(50,30));
+        waste.setFont(new Font("SansSerif",Font.PLAIN,22));
+        waste.setBackground(new Color(46,47,44));
+        waste.setOpaque(true);
+        waste.setForeground(Color.white);
+        waste.setOpaque(true);
+        make.add(waste);
+
         JRadioButton radioButton = new JRadioButton();
         make.add(radioButton);
         radioButton.setSelected(true);
+
+        switch (nameOfPanel)
+        {
+            case "FORM":
+                formList.add(make);
+                break;
+            case "HEADER":
+                headerList.add(make);
+                break;
+            case "QUERY":
+                queryList.add(make);
+                break;
+        }
+
         radioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -468,31 +503,82 @@ public class InsomniaGUI
             }
         });
 
-        JButton waste = new JButton("\uD83D\uDDD1");
-        waste.setPreferredSize(new Dimension(50,30));
-        waste.setFont(new Font("SansSerif",Font.PLAIN,22));
-        waste.setBackground(new Color(46,47,44));
-        waste.setOpaque(true);
-        waste.setForeground(Color.white);
-        waste.setOpaque(true);
-        make.add(waste);
+
 
         waste.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.remove(make);
-                panel.revalidate();
-                panel.repaint();
+                switch (nameOfPanel)
+                {
+                    case "FORM":
+                        if (getFormList().size() > 1)
+                        {
+                            delete(waste,panel,make);
+                            getFormList().remove(make);
+                        }
+                        break;
+                    case "HEADER":
+                        if (getHeaderList().size() > 1)
+                        {
+                            delete(waste,panel,make);
+                            getHeaderList().remove(make);
+                        }
+                        break;
+                    case "QUERY":
+                        if (getQueryList().size() > 1)
+                        {
+                            delete(waste,panel,make);
+                            getQueryList().remove(make);
+                        }
+                        break;
+                }
             }
         });
 
-//        value.addMouseListener(new MouseAdapter() {
-//            public void mouseClicked(MouseEvent me) {
-//                makeFormPanel(panel);//////////////////////////////////////////////////////////////
-//            }
-//        });
+
+        value.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent me) {
+                switch (nameOfPanel)
+                {
+                    case "FORM":
+                        if (getFormList().size()-1 == getFormList().indexOf(make))
+                        {
+                            adding(panel,make, "FORM");
+                            getFormList().add(make);
+                        }
+                        break;
+                    case "HEADER":
+                        if (getHeaderList().size()-1 == getHeaderList().indexOf(make))
+                        {
+                            adding(panel,make,"HEADER");
+                            getHeaderList().add(make);
+                        }
+                        break;
+                    case "QUERY":
+                        if (getQueryList().size()-1 == getQueryList().indexOf(make))
+                        {
+                            adding(panel,make,"QUERY");
+                            getQueryList().add(make);
+                        }
+                        break;
+                }
+            }
+        });
     }
 
+    public void delete(JButton waste, JPanel panel, JPanel make)
+    {
+        panel.remove(make);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    public void adding( JPanel panel, JPanel make, String nameOfPanel)
+    {
+        makeFormPanel(panel, nameOfPanel);
+        panel.revalidate();
+        panel.repaint();
+    }
 
     public void makeJsonPanel(JPanel panel)
     {
