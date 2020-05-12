@@ -12,10 +12,13 @@ public class InsomniaGUI
     private JFrame frame;
     private JPanel request, requester, response;
     private CardLayout cardLayout, cardLayout1;
-    private boolean hiding = false;
+    private boolean hiding = false, following = false;
 
     public void setHiding(boolean hiding) { this.hiding = hiding; }
     public boolean isHiding() { return hiding; }
+
+    public void setFollowing(boolean following) { this.following = following; }
+    public boolean isFollowing() { return following; }
 
     public InsomniaGUI()
     {
@@ -23,7 +26,7 @@ public class InsomniaGUI
         frame.setLayout(new BorderLayout());
         frame.setVisible(true);
         frame.setLocation(60,70);
-        frame.setSize(1400,700);
+        frame.setSize(1420,720);
 
         request = new JPanel();
         requester = new JPanel();
@@ -77,6 +80,15 @@ public class InsomniaGUI
                 optionFrame.add(optionPanel, BorderLayout.CENTER);
                 JCheckBox followRedirect = new JCheckBox("Follow Redirect");
                 JCheckBox systemTray = new JCheckBox("Hide in System Tray");
+                if (isFollowing())
+                    followRedirect.setSelected(true);
+                else
+                    followRedirect.setSelected(false);
+
+                if (isHiding())
+                    systemTray.setSelected(true);
+                else
+                    systemTray.setSelected(false);
                 optionPanel.add(followRedirect);
                 optionPanel.add(systemTray);
 
@@ -85,7 +97,13 @@ public class InsomniaGUI
                     public void actionPerformed(ActionEvent e) {
                         if (followRedirect.isSelected())
                         {
-                            /////////////////////////////////////////
+                            followRedirect.setSelected(true);
+                            setFollowing(true);
+                        }
+                        else
+                        {
+                            followRedirect.setSelected(false);
+                            setFollowing(false);
                         }
                     }
                 });
@@ -93,9 +111,15 @@ public class InsomniaGUI
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (systemTray.isSelected())
+                        {
+                            systemTray.setSelected(true);
                             setHiding(true);
+                        }
                         else
+                        {
+                            systemTray.setSelected(false);
                             setHiding(false);
+                        }
                     }
                 });
             }
@@ -111,7 +135,7 @@ public class InsomniaGUI
                   frame.dispose();
                 else
                 {
-                    
+                    hideInTray();
                 }
             }
         });
@@ -127,6 +151,7 @@ public class InsomniaGUI
             @Override
             public void actionPerformed(ActionEvent e) {
                 /////////////////////////////////////////////////////////////////////
+
 //                Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 //                final int screen_Width = dim.width;
 //                final int screen_Height = dim.height;
@@ -201,6 +226,53 @@ public class InsomniaGUI
         });
         helper.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, ActionEvent.ALT_MASK));
         help.add(helper);
+    }
+
+    public void hideInTray()
+    {
+        if (!SystemTray.isSupported()) {
+            System.out.println("SystemTray is not supported");
+            return;
+        }
+        final PopupMenu popup = new PopupMenu();
+        SystemTray tray = SystemTray.getSystemTray();
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Image image = toolkit.getImage("icon.png");
+        final TrayIcon trayIcon = new TrayIcon(image, "Insomnia", popup);
+//        final TrayIcon trayIcon = new TrayIcon(new ImageIcon(getClass().getResource("/com/example/icons/32/app.png")).getImage());
+//        final SystemTray tray = SystemTray.getSystemTray();
+
+        // Create a pop-up menu components
+        MenuItem aboutItem = new MenuItem("About");
+        CheckboxMenuItem cb1 = new CheckboxMenuItem("Set auto size");
+        CheckboxMenuItem cb2 = new CheckboxMenuItem("Set tooltip");
+        Menu displayMenu = new Menu("Display");
+        MenuItem errorItem = new MenuItem("Error");
+        MenuItem warningItem = new MenuItem("Warning");
+        MenuItem infoItem = new MenuItem("Info");
+        MenuItem noneItem = new MenuItem("None");
+        MenuItem exitItem = new MenuItem("Exit");
+
+        //Add components to pop-up menu
+        popup.add(aboutItem);
+        popup.addSeparator();
+        popup.add(cb1);
+        popup.add(cb2);
+        popup.addSeparator();
+        popup.add(displayMenu);
+        displayMenu.add(errorItem);
+        displayMenu.add(warningItem);
+        displayMenu.add(infoItem);
+        displayMenu.add(noneItem);
+        popup.add(exitItem);
+
+        trayIcon.setPopupMenu(popup);
+
+        try {
+            tray.add(trayIcon);
+        } catch (AWTException e) {
+            System.out.println("TrayIcon could not be added.");
+        }
     }
 
     public void insomniaRequester()
@@ -767,6 +839,13 @@ public class InsomniaGUI
         copy.setForeground(Color.white);
         copy.setOpaque(true);
         headerTop.add(copy);
+
+        JTable headerTable = new JTable();
+        headerTable.setBackground(new Color(46,47,44));
+        headerTable.setOpaque(true);
+        headerTable.setForeground(Color.gray);
+        headerTable.setOpaque(true);
+        panel.add(headerTable,BorderLayout.CENTER);
 
         copy.addActionListener(new ActionListener() {
             @Override
