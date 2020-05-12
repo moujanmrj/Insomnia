@@ -11,20 +11,11 @@ public class InsomniaGUI
 {
     private JFrame frame;
     private JPanel request, requester, response;
-    private CardLayout cardLayout;
+    private CardLayout cardLayout, cardLayout1;
+    private boolean hiding = false;
 
-    public JFrame getFrame() { return frame; }
-    public void setFrame(JFrame frame) { this.frame = frame; }
-
-    public JPanel getRequest() { return request; }
-    public void setRequest(JPanel request) { this.request = request; }
-
-    public JPanel getRequester() { return requester; }
-    public void setRequester(JPanel requester) { this.requester = requester; }
-
-    public JPanel getResponse() { return response; }
-
-    public void setResponse(JPanel response) { this.response = response; }
+    public void setHiding(boolean hiding) { this.hiding = hiding; }
+    public boolean isHiding() { return hiding; }
 
     public InsomniaGUI()
     {
@@ -76,7 +67,37 @@ public class InsomniaGUI
         options.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ///////////////////////////////////////////////////////////////////////////
+                JFrame optionFrame = new JFrame("Options");
+                optionFrame.setLayout(new BorderLayout());
+                optionFrame.setVisible(true);
+                optionFrame.setLocation(600,350);
+                optionFrame.setSize(300,75);
+                JPanel optionPanel = new JPanel();
+                optionPanel.setBackground(Color.gray);
+                optionFrame.add(optionPanel, BorderLayout.CENTER);
+                JCheckBox followRedirect = new JCheckBox("Follow Redirect");
+                JCheckBox systemTray = new JCheckBox("Hide in System Tray");
+                optionPanel.add(followRedirect);
+                optionPanel.add(systemTray);
+
+                followRedirect.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (followRedirect.isSelected())
+                        {
+                            /////////////////////////////////////////
+                        }
+                    }
+                });
+                systemTray.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (systemTray.isSelected())
+                            setHiding(true);
+                        else
+                            setHiding(false);
+                    }
+                });
             }
         });
         options.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
@@ -86,7 +107,12 @@ public class InsomniaGUI
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();////////////////////////////////////////////////////////////
+                if (!isHiding())
+                  frame.dispose();
+                else
+                {
+                    
+                }
             }
         });
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
@@ -136,7 +162,7 @@ public class InsomniaGUI
         about.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame aboutFrame = new JFrame();
+                JFrame aboutFrame = new JFrame("About");
                 aboutFrame.setLayout(new BorderLayout());
                 aboutFrame.setVisible(true);
                 aboutFrame.setLocation(600,350);
@@ -163,7 +189,7 @@ public class InsomniaGUI
         helper.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame helpFrame = new JFrame();
+                JFrame helpFrame = new JFrame("Help");
                 helpFrame.setLayout(new BorderLayout());
                 helpFrame.setVisible(true);
                 helpFrame.setLocation(600,350);
@@ -193,11 +219,13 @@ public class InsomniaGUI
         makeJsonPanel(jsonPanel);
 
         JPanel binaryPanel = new JPanel();
+        ////////////////////////////////////////////////////////////////
 
         JPanel bearerPanel = new JPanel();
         makeBearerPanel(bearerPanel);
 
         JPanel queryPanel = new JPanel();
+        makeFormPanel(queryPanel);
 
         JPanel headerPanel = new JPanel();
         makeFormPanel(headerPanel);
@@ -388,7 +416,7 @@ public class InsomniaGUI
 
 //        value.addMouseListener(new MouseAdapter() {
 //            public void mouseClicked(MouseEvent me) {
-//                makeFormPanel(panel);
+//                makeFormPanel(panel);//////////////////////////////////////////////////////////////
 //            }
 //        });
     }
@@ -635,6 +663,117 @@ public class InsomniaGUI
 
     public void insomniaResponse()
     {
+        cardLayout1 = new CardLayout();
+        JPanel responseCenter = new JPanel();
+        responseCenter.setLayout(cardLayout1);
+        response.add(responseCenter,BorderLayout.CENTER);
+        responseCenter.setBackground(new Color(46,47,44));
+        responseCenter.setOpaque(true);
+
+        JPanel messageBodyPanel = new JPanel();
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        JPanel headerPanel = new JPanel();
+        makeHeaderPanel(headerPanel);
+
+        messageBodyPanel.setBackground(new Color(46,47,44));
+        headerPanel.setBackground(new Color(46,47,44));
+
+        responseCenter.add(messageBodyPanel,"1");
+        responseCenter.add(headerPanel, "2");
+
+        JPanel responseTop = new JPanel();
+        responseTop.setLayout(new GridLayout(2,1));
+        response.add(responseTop,BorderLayout.NORTH);
+
+        JPanel statuses = new JPanel();
+        statuses.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        JButton status = new JButton("OK");
+        status.setPreferredSize(new Dimension(60,40));
+        statuses.add(status);
+
+        JButton time = new JButton("S");
+        time.setPreferredSize(new Dimension(60,40));
+        statuses.add(time);
+
+        JButton capacity = new JButton("KB");
+        capacity.setPreferredSize(new Dimension(60,40));
+        statuses.add(capacity);
+
+        responseTop.add(statuses);
+
+        JPanel tabsRes = new JPanel();
+        tabsRes.setLayout(new FlowLayout(FlowLayout.LEFT));
+        tabsRes.setBackground(new Color(46,47,44));
+        tabsRes.setOpaque(true);
+        tabsRes.setBorder(new LineBorder(Color.gray));
+        tabsRes.setOpaque(true);
+
+
+        JButton messageBody = new JButton("Message Body");
+        messageBody.setBackground(new Color(46,47,44));
+        messageBody.setOpaque(true);
+        messageBody.setForeground(Color.white);
+        messageBody.setOpaque(true);
+        messageBody.setPreferredSize(new Dimension(150,40));
+        tabsRes.add(messageBody);
+
+        JButton header = new JButton("Header");
+        header.setBackground(new Color(46,47,44));
+        header.setOpaque(true);
+        header.setForeground(Color.white);
+        header.setOpaque(true);
+        header.setPreferredSize(new Dimension(100,40));
+        tabsRes.add(header);
+
+        responseTop.add(tabsRes);
+
+        messageBody.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout1.show(responseCenter,"1");
+            }
+        });
+
+        header.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout1.show(responseCenter,"2");
+            }
+        });
+    }
+
+    public void makeHeaderPanel(JPanel panel)
+    {
+        panel.setLayout(new BorderLayout());
+        JPanel headerTop = new JPanel();
+        headerTop.setLayout(new FlowLayout(FlowLayout.LEFT));
+        headerTop.setBackground(new Color(46,47,44));
+        headerTop.setOpaque(true);
+        panel.add(headerTop, BorderLayout.NORTH);
+
+        JLabel nameVal = new JLabel("  NAME                                                                        VALUE                                     ");
+        nameVal.setFont(new Font("Arial",Font.PLAIN,13));
+        nameVal.setBackground(new Color(46,47,44));
+        nameVal.setOpaque(true);
+        nameVal.setForeground(Color.gray);
+        nameVal.setOpaque(true);
+        headerTop.add(nameVal);
+
+        JButton copy = new JButton("Copy to Clipboard");
+        copy.setBackground(new Color(46,47,44));
+        copy.setOpaque(true);
+        copy.setForeground(Color.white);
+        copy.setOpaque(true);
+        headerTop.add(copy);
+
+        copy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               //////////////////////////////////////////////////////////////////
+            }
+        });
 
     }
 }
