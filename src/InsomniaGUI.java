@@ -7,6 +7,13 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+/**
+ * this class has all the gui and some actions but it's gonna change into multiple classes in the future
+ *
+ *
+ * @author Moujan Mirjalili
+ * @version  2020
+ */
 
 public class InsomniaGUI
 {
@@ -18,6 +25,11 @@ public class InsomniaGUI
     private ArrayList<JPanel> headerList = new ArrayList<>();
     private ArrayList<JPanel> queryList = new ArrayList<>();
     private ArrayList<JPanel> formList = new ArrayList<>();
+
+    private ArrayList<Request> requestsOfInsomnia = new ArrayList<>();
+
+    public void setRequestsOfInsomnia(ArrayList<Request> requestsOfInsomnia) { this.requestsOfInsomnia = requestsOfInsomnia; }
+    public ArrayList<Request> getRequestsOfInsomnia() { return requestsOfInsomnia; }
 
     public void setHeaderList(ArrayList<JPanel> headerList) { this.headerList = headerList; }
     public ArrayList<JPanel> getHeaderList() { return headerList; }
@@ -795,7 +807,7 @@ public class InsomniaGUI
                     create.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            
+                            createRequests(comboGet,newReqText);
                         }
                     });
                 }
@@ -824,6 +836,78 @@ public class InsomniaGUI
                 }
             }
         });
+    }
+
+    public void createRequests(JComboBox<String> comboBox, JTextArea textName)
+    {
+        JPanel requestsCenter = new JPanel();
+        BoxLayout boxlayout = new BoxLayout(requestsCenter, BoxLayout.Y_AXIS);
+        requestsCenter.setLayout(boxlayout);
+        request.add(requestsCenter, BorderLayout.CENTER);
+
+        String type = String.valueOf(comboBox.getSelectedItem());
+        String name = textName.getText();
+        Request theNewRequest = new Request(type, name);
+        requestsOfInsomnia.add(theNewRequest);
+
+        requestsCenter.setBackground(new Color(46,47,44));
+        requestsCenter.setOpaque(true);
+        requestsCenter.setForeground(Color.white);
+        requestsCenter.setOpaque(true);
+
+        JPanel info = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+        info.setBackground(new Color(46,47,44));
+        info.setOpaque(true);
+        info.setForeground(Color.white);
+        info.setOpaque(true);
+
+
+        JButton theName = new JButton(name);
+        JButton theType = new JButton(type);
+
+        theName.setBackground(new Color(46,47,44));
+        theName.setOpaque(true);
+        theName.setForeground(Color.white);
+        theName.setOpaque(true);
+
+        theType.setBackground(new Color(46,47,44));
+        theType.setOpaque(true);
+
+        switch (type)
+        {
+            case "GET":
+                theType.setForeground(new Color(102,96,178));
+                theType.setOpaque(true);
+                break;
+            case "POST":
+                theType.setForeground(new Color(89,162,16));
+                theType.setOpaque(true);
+                break;
+            case "PUT":
+                theType.setForeground(new Color(208,117,2));
+                theType.setOpaque(true);
+                break;
+            case "PATCH":
+                theType.setForeground(new Color(185,164,37));
+                theType.setOpaque(true);
+                break;
+            case "DELETE":
+                theType.setForeground(new Color(208,68,68));
+                theType.setOpaque(true);
+                break;
+        }
+       
+        theName.setPreferredSize(new Dimension(150,30));
+        theType.setPreferredSize(new Dimension(100,30));
+
+        info.add(theType);
+        info.add(theName);
+
+        requestsCenter.add(info);
+
+        requestsCenter.revalidate();
+        requestsCenter.repaint();
     }
 
     public void insomniaResponse()
