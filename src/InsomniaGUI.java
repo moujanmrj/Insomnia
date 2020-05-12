@@ -860,6 +860,13 @@ public class InsomniaGUI
         newReq.add(newRequest);
 
 
+        JPanel requestsCenter = new JPanel();
+        request.add(requestsCenter, BorderLayout.CENTER);
+        requestsCenter.setBackground(new Color(46,47,44));
+        requestsCenter.setOpaque(true);
+        requestsCenter.setForeground(Color.white);
+        requestsCenter.setOpaque(true);
+
         newRequest.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -905,7 +912,7 @@ public class InsomniaGUI
                     create.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            createRequests(comboGet,newReqText);
+                            createRequests(comboGet,newReqText,requestsCenter);
                             newReqFrame.dispose();
                         }
                     });
@@ -939,25 +946,21 @@ public class InsomniaGUI
 
     /**
      * this creates the requests
-     * @param comboBox
-     * @param textName
+     * @param comboBox the choices of type
+     * @param textName name of the request
+     * @param requestsCenter is the box panel we're adding requests to
      */
-    public void createRequests(JComboBox<String> comboBox, JTextArea textName)
+    public void createRequests(JComboBox<String> comboBox, JTextArea textName, JPanel requestsCenter)
     {
-        JPanel requestsCenter = new JPanel();
-        BoxLayout boxlayout = new BoxLayout(requestsCenter, BoxLayout.Y_AXIS);
-        requestsCenter.setLayout(boxlayout);
-        request.add(requestsCenter, BorderLayout.CENTER);
+
+        BoxLayout boxlayout1 = new BoxLayout(requestsCenter, BoxLayout.Y_AXIS);
+        requestsCenter.setLayout(boxlayout1);
+
 
         String type = String.valueOf(comboBox.getSelectedItem());
         String name = textName.getText();
         Request theNewRequest = new Request(type, name);
         getRequestsOfInsomnia().add(theNewRequest);
-
-        requestsCenter.setBackground(new Color(46,47,44));
-        requestsCenter.setOpaque(true);
-        requestsCenter.setForeground(Color.white);
-        requestsCenter.setOpaque(true);
 
         JPanel info = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -965,7 +968,7 @@ public class InsomniaGUI
         info.setOpaque(true);
         info.setForeground(Color.white);
         info.setOpaque(true);
-
+        info.setMaximumSize(new Dimension(300,40));
 
         JButton theName = new JButton(name);
         JButton theType = new JButton(type);
