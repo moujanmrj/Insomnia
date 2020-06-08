@@ -35,9 +35,9 @@ public class Request implements Serializable {
             {
                 byte[] postData = data.getBytes( StandardCharsets.UTF_8 );
                 int postDataLength = postData.length;
-                connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
-                connection.setRequestProperty( "charset", "utf-8");
-                connection.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
+                connection.setRequestProperty("charset", "utf-8");
+                connection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 try( DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
                     wr.write( postData );
                 }
@@ -55,7 +55,11 @@ public class Request implements Serializable {
 
             status = connection.getResponseCode() + " " + connection.getResponseMessage();
             time = ((System.currentTimeMillis() - startTime)/1000) + ":" + ((System.currentTimeMillis() - startTime)%1000)/10 + "S";
+            if(connection.getResponseCode() == 200)
+                System.out.print("\u001B[32m");
             System.out.println(status + " " + time);
+            System.out.print("\u001B[0m");
+
 
             for(Map.Entry<String, List<String>> entry : connection.getHeaderFields().entrySet()) {
                 if(showHeaders) System.out.println(entry.getKey() + ":" + entry.getValue());

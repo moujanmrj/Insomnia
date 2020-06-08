@@ -28,6 +28,26 @@ public class Jurl {
                 i++;
                 System.out.println(i+" : "+request);
             }
+            return;
+        }
+
+        if(args[0].toLowerCase().equals("-fire"))
+        {
+            ArrayList<Request> savedRequests;
+            try {
+                FileInputStream fis = new FileInputStream("Saved_Commands.jurl");
+                ObjectInputStream ois=new ObjectInputStream(fis);
+                savedRequests = (ArrayList<Request>) ois.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                savedRequests = new ArrayList<>();
+            }
+            for(int i = 1;i < args.length;i++)
+            {
+                Request request = savedRequests.get(Integer.parseInt(args[i])-1);
+                System.out.println("\u001B[33m" + request+":\u001B[0m");
+                request.send();
+            }
+            return;
         }
 
         Request request = new Request();
