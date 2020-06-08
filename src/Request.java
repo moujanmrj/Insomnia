@@ -1,6 +1,4 @@
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,10 +17,13 @@ public class Request implements Serializable {
     private boolean follow = false;
     private String receivedHeaders = "";
     private String status = "null";
+    private String answer = "";
+    private String time = "0:00S";
 
     public void send()
     {
         try {
+            long startTime = System.currentTimeMillis();
             URL url = new URL(this.url);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             //Set settings:
@@ -53,7 +54,8 @@ public class Request implements Serializable {
             }
 
             status = connection.getResponseCode() + " " + connection.getResponseMessage();
-            System.out.println(status);
+            time = ((System.currentTimeMillis() - startTime)/1000) + ":" + ((System.currentTimeMillis() - startTime)%1000)/10 + "S";
+            System.out.println(status + " " + time);
 
             for(Map.Entry<String, List<String>> entry : connection.getHeaderFields().entrySet()) {
                 if(showHeaders) System.out.println(entry.getKey() + ":" + entry.getValue());
@@ -63,7 +65,35 @@ public class Request implements Serializable {
                 receivedHeaders = receivedHeaders.substring(0,receivedHeaders.length()-1);
 
 
-            if(connection.getResponseCode() == 200)
+            try
+            {
+                if(output.equals(""))
+                {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    answer = "";
+                    while (true) {
+                        String temp = bufferedReader.readLine();
+                        if(temp == null) break;
+                        answer += temp + "\n";
+                    }
+                    System.out.println(answer);
+                }
+                else
+                {
+                    if (!output.contains(".") && output.toLowerCase().contains("output_"))
+                        output += connection.getHeaderField("Content-Type").toLowerCase().contains("png") ? ".png" : ".html";
+
+                    FileOutputStream file = new FileOutputStream(new File(output));
+                    InputStream inputStream = connection.getInputStream();
+                    byte[] buffer = new byte[1024];
+                    int bufferLength;
+                    while ((bufferLength = inputStream.read(buffer)) > 0) {
+                        file.write(buffer , 0 , bufferLength);
+                    }
+                    file.close();
+                }
+            }
+            catch (Exception ignored)
             {
 
             }
