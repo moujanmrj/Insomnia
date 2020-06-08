@@ -1,5 +1,6 @@
 public class Request {
     private String url = "";
+    private RequestMethods method = RequestMethods.GET;
     private String headers = "";
     private String data = "";
     private String output = "";
@@ -53,5 +54,13 @@ public class Request {
 
     public void setFollow(boolean follow) {
         this.follow = follow;
+    }
+
+    public RequestMethods getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = RequestMethods.valueOf(method.toUpperCase());
     }
 }
