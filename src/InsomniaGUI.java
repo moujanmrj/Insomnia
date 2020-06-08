@@ -29,14 +29,14 @@ public class InsomniaGUI
     private ArrayList<JPanel> queryList = new ArrayList<>();
     private ArrayList<JPanel> formList = new ArrayList<>();
 
-    private ArrayList<Request> requestsOfInsomnia = new ArrayList<>();
+    private ArrayList<Requests> requestsOfInsomnia = new ArrayList<>();
 
 
     /**
      * gets list of request
      * @return list of request
      */
-    public ArrayList<Request> getRequestsOfInsomnia() { return requestsOfInsomnia; }
+    public ArrayList<Requests> getRequestsOfInsomnia() { return requestsOfInsomnia; }
     /**
      * gets list of header
      * @return list of header
@@ -348,9 +348,11 @@ public class InsomniaGUI
         cardLayout = new CardLayout();
         JPanel requesterCenter = new JPanel();
         requesterCenter.setLayout(cardLayout);
-        requester.add(requesterCenter,BorderLayout.CENTER);
+        JScrollPane scrollingCards = new JScrollPane(requesterCenter);
+        requester.add(scrollingCards,BorderLayout.CENTER);
         requesterCenter.setBackground(new Color(46,47,44));
         requesterCenter.setOpaque(true);
+
 
         JPanel formPanel = new JPanel();
         makeFormPanel(formPanel,"FORM");
@@ -502,7 +504,7 @@ public class InsomniaGUI
         make.setLayout(new FlowLayout(FlowLayout.LEFT));
         make.setBackground(new Color(46,47,44));
         make.setOpaque(true);
-        panel.add(make, BorderLayout.CENTER);
+        panel.add(make);
         make.setMaximumSize(new Dimension(500,40));
 
         JTextArea name = new JTextArea("name");
@@ -566,7 +568,6 @@ public class InsomniaGUI
         });
 
 
-
         waste.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -600,24 +601,26 @@ public class InsomniaGUI
 
         value.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent me) {
-                adding(panel,make,nameOfPanel);
                 switch (nameOfPanel)
                 {
                     case "FORM":
                         if (getFormList().size()-1 == getFormList().indexOf(make))
                         {
+                            adding(panel,make,nameOfPanel);
                             getFormList().add(make);
                         }
                         break;
                     case "HEADER":
                         if (getHeaderList().size()-1 == getHeaderList().indexOf(make))
                         {
+                            adding(panel,make,nameOfPanel);
                             getHeaderList().add(make);
                         }
                         break;
                     case "QUERY":
                         if (getQueryList().size()-1 == getQueryList().indexOf(make))
                         {
+                            adding(panel,make,nameOfPanel);
                             getQueryList().add(make);
                         }
                         break;
@@ -664,6 +667,11 @@ public class InsomniaGUI
         panel.remove(make);
         panel.revalidate();
         panel.repaint();
+    }
+
+    public void addingActions()
+    {
+
     }
 
     /**
@@ -861,11 +869,12 @@ public class InsomniaGUI
 
 
         JPanel requestsCenter = new JPanel();
-        request.add(requestsCenter, BorderLayout.CENTER);
         requestsCenter.setBackground(new Color(46,47,44));
         requestsCenter.setOpaque(true);
         requestsCenter.setForeground(Color.white);
         requestsCenter.setOpaque(true);
+        JScrollPane scrollingNewReq = new JScrollPane(requestsCenter);
+        request.add(scrollingNewReq, BorderLayout.CENTER);
 
         newRequest.addActionListener(new ActionListener() {
             @Override
@@ -959,7 +968,7 @@ public class InsomniaGUI
 
         String type = String.valueOf(comboBox.getSelectedItem());
         String name = textName.getText();
-        Request theNewRequest = new Request(type, name);
+        Requests theNewRequest = new Requests(type, name);
         getRequestsOfInsomnia().add(theNewRequest);
 
         JPanel info = new JPanel(new FlowLayout(FlowLayout.LEFT));
