@@ -110,6 +110,7 @@ public class Jurl {
             }
         }
 
+        request.send();
     }
     private static boolean isThis(String arg , String command)
     {
