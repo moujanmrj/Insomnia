@@ -16,7 +16,7 @@ public class Jurl {
         {
             ArrayList<Request> savedRequests;
             try {
-                FileInputStream fis = new FileInputStream("Saved_Commands");
+                FileInputStream fis = new FileInputStream("Saved_Commands.jurl");
                 ObjectInputStream ois=new ObjectInputStream(fis);
                 savedRequests = (ArrayList<Request>) ois.readObject();
             } catch (IOException | ClassNotFoundException e) {
@@ -90,7 +90,7 @@ public class Jurl {
         {
             ArrayList<Request> savedRequests = null;
             try {
-                FileInputStream fis = new FileInputStream("Saved_Commands");
+                FileInputStream fis = new FileInputStream("Saved_Commands.jurl");
                 ObjectInputStream ois=new ObjectInputStream(fis);
                 savedRequests = (ArrayList<Request>) ois.readObject();
                 fis.close();
@@ -100,7 +100,7 @@ public class Jurl {
             }
             savedRequests.add(request);
             try{
-                FileOutputStream fop=new FileOutputStream("Saved_Commands");
+                FileOutputStream fop=new FileOutputStream("Saved_Commands.jurl");
                 ObjectOutputStream oos=new ObjectOutputStream(fop);
                 oos.writeObject(savedRequests);
                 oos.close();

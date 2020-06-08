@@ -1,4 +1,8 @@
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class Request implements Serializable {
     private String url = "";
@@ -9,6 +13,20 @@ public class Request implements Serializable {
     private boolean showHeaders = false;
     private boolean follow = false;
 
+    public void send()
+    {
+        try {
+            URL url = new URL(this.url);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            //Set settings:
+            connection.setRequestMethod(method.name());
+            connection.setInstanceFollowRedirects(follow);
+
+            connection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public String getUrl() {
         return url;
