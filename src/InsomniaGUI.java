@@ -395,13 +395,15 @@ public class InsomniaGUI
         comboGet.setPreferredSize(new Dimension(80,40));
         getTextSend.add(comboGet);
 
-        JTextArea urlAddress = new JTextArea();
+        JTextField urlAddress = new JTextField();
         Controller.urlAddress = urlAddress;
+        urlAddress.setFont(new Font("Arial" , Font.PLAIN,15));
         urlAddress.setPreferredSize(new Dimension(270,40));
         getTextSend.add(urlAddress);
 
         JButton send = new JButton("Send");
         send.setPreferredSize(new Dimension(60,40));
+        send.addActionListener(e -> Controller.sendRequest());
         getTextSend.add(send);
 
         JButton save = new JButton("Save");
