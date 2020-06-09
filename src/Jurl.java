@@ -1,11 +1,15 @@
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jurl {
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         if(args.length == 0)
         {
             Scanner sc = new Scanner(System.in);
@@ -47,6 +51,16 @@ public class Jurl {
                 System.out.println("\u001B[33m" + request+":\u001B[0m");
                 request.send();
             }
+            return;
+        }
+        if(args[0].toLowerCase().equals("-help"))
+        {
+            System.out.println("--method -m : set request method in next argument\n" +
+                    "--save -s : save request for later\n" +
+                    "--output -o : save file (you can choose name in next argument)\n" +
+                    "--data -d : set form data in next argument\n" +
+                    "--i : show response headers\n" +
+                    "--f : set follow redirect true");
             return;
         }
 

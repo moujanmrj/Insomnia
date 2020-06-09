@@ -13,6 +13,7 @@ public class Request implements Serializable {
     private String headers = "";
     private String data = "";
     private String output = "";
+    private String response = "";
     private boolean showHeaders = false;
     private boolean follow = false;
     private String receivedHeaders = "";
@@ -30,33 +31,38 @@ public class Request implements Serializable {
             connection.setRequestMethod(method.name());
             connection.setInstanceFollowRedirects(follow);
             connection.setDoOutput(true);
+            connection.setUseCaches(false);
 
+            if(!headers.equals(""))
+                for(String s : headers.split(";"))
+                {
+                    try{
+                        connection.setRequestProperty(s.split(":")[0],s.split(":")[1]);
+                    }
+                    catch (Exception ignored)
+                    {
+                    }
+                }
             if(!data.equals(""))
             {
-                byte[] postData = data.getBytes( StandardCharsets.UTF_8 );
-                int postDataLength = postData.length;
-                connection.setRequestProperty("charset", "utf-8");
-                connection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                try( DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
-                    wr.write( postData );
+                HashMap<String,String> body = new HashMap<String, String>();
+                for(String str : data.split("&")){
+                    body.put(str.split("=")[0],str.split("=")[1]);
                 }
-            }
+                String boundary = System.currentTimeMillis() + "";
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+                BufferedOutputStream request = new BufferedOutputStream(connection.getOutputStream());
+                bufferOutFormData(body, boundary, request);
 
-            for(String s : headers.split(";"))
-            {
-                try{
-                    connection.setRequestProperty(s.split(":")[0],s.split(":")[1]);
-                }
-                catch (Exception ignored)
-                {
-                }
             }
 
             status = connection.getResponseCode() + " " + connection.getResponseMessage();
             time = ((System.currentTimeMillis() - startTime)/1000) + ":" + ((System.currentTimeMillis() - startTime)%1000)/10 + "S";
             if(connection.getResponseCode() == 200)
                 System.out.print("\u001B[32m");
+            else
+                System.out.print("\u001B[31m");
             System.out.println(status + " " + time);
             System.out.print("\u001B[0m");
 
@@ -68,19 +74,13 @@ public class Request implements Serializable {
             if(receivedHeaders.length()>0)
                 receivedHeaders = receivedHeaders.substring(0,receivedHeaders.length()-1);
 
-
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(connection.getInputStream());
+            response = new String(bufferedInputStream.readAllBytes());
             try
             {
                 if(output.equals(""))
                 {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    answer = "";
-                    while (true) {
-                        String temp = bufferedReader.readLine();
-                        if(temp == null) break;
-                        answer += temp + "\n";
-                    }
-                    System.out.println(answer);
+                    System.out.println(response);
                 }
                 else
                 {
@@ -99,7 +99,6 @@ public class Request implements Serializable {
             }
             catch (Exception ignored)
             {
-
             }
 
 
@@ -122,7 +121,7 @@ public class Request implements Serializable {
     }
 
     public void setHeaders(String headers) {
-        this.headers = headers;
+        this.headers = headers.replace("\"","");
     }
 
     public String getData() {
@@ -130,7 +129,7 @@ public class Request implements Serializable {
     }
 
     public void setData(String data) {
-        this.data = data;
+        this.data = data.replace("\"","");
     }
 
     public String getOutput() {
@@ -175,5 +174,30 @@ public class Request implements Serializable {
                         ", output='" + output + '\'' +
                         ", showHeaders=" + showHeaders +
                         ", follow=" + follow;
+    }
+
+
+
+    private void bufferOutFormData(HashMap<String, String> body, String boundary, BufferedOutputStream bufferedOutputStream) throws IOException {
+        for (String key : body.keySet()) {
+            bufferedOutputStream.write(("--" + boundary + "\r\n").getBytes());
+            if (key.contains("file")) {
+                bufferedOutputStream.write(("Content-Disposition: form-data; filename=\"" + (new File(body.get(key))).getName() + "\"\r\nContent-Type: Auto\r\n\r\n").getBytes());
+                try {
+                    BufferedInputStream tempBufferedInputStream = new BufferedInputStream(new FileInputStream(new File(body.get(key))));
+                    byte[] filesBytes = tempBufferedInputStream.readAllBytes();
+                    bufferedOutputStream.write(filesBytes);
+                    bufferedOutputStream.write("\r\n".getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                bufferedOutputStream.write(("Content-Disposition: form-data; name=\"" + key + "\"\r\n\r\n").getBytes());
+                bufferedOutputStream.write((body.get(key) + "\r\n").getBytes());
+            }
+        }
+        bufferedOutputStream.write(("--" + boundary + "--\r\n").getBytes());
+        bufferedOutputStream.flush();
+        bufferedOutputStream.close();
     }
 }
