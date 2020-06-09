@@ -1,9 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.util.ArrayList;
 
@@ -196,7 +193,7 @@ public class InsomniaGUI
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!isHiding())
-                  frame.dispose();
+                    frame.dispose();
                 else
                 {
                     hideInTray();
@@ -392,13 +389,8 @@ public class InsomniaGUI
 
         JPanel getTextSend = new JPanel();
         getTextSend.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JComboBox<String> comboGet = new JComboBox<>();
-        comboGet.addItem("GET");
-        comboGet.addItem("POST");
-        comboGet.addItem("PUT");
-        comboGet.addItem("PATCH");
-        comboGet.addItem("DELETE");
-        comboGet.setPreferredSize(new Dimension(60,40));
+        JComboBox<RequestMethods> comboGet = new JComboBox<>(RequestMethods.values());
+        comboGet.setPreferredSize(new Dimension(80,40));
         getTextSend.add(comboGet);
 
         JTextArea urlAddress = new JTextArea();
@@ -1150,7 +1142,7 @@ public class InsomniaGUI
         copy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               //////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////
             }
         });
     }
