@@ -1,8 +1,6 @@
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,12 +11,11 @@ public class Request implements Serializable {
     private String headers = "";
     private String data = "";
     private String output = "";
-    private String response = "";
+    private String answer = "";
     private boolean showHeaders = false;
     private boolean follow = false;
     private String receivedHeaders = "";
     private String status = "null";
-    private String answer = "";
     private String time = "0:00S";
 
     public void send()
@@ -75,12 +72,12 @@ public class Request implements Serializable {
                 receivedHeaders = receivedHeaders.substring(0,receivedHeaders.length()-1);
 
             BufferedInputStream bufferedInputStream = new BufferedInputStream(connection.getInputStream());
-            response = new String(bufferedInputStream.readAllBytes());
+            answer = new String(bufferedInputStream.readAllBytes());
             try
             {
                 if(output.equals(""))
                 {
-                    System.out.println(response);
+                    System.out.println(answer);
                 }
                 else
                 {

@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -390,10 +391,12 @@ public class InsomniaGUI
         JPanel getTextSend = new JPanel();
         getTextSend.setLayout(new FlowLayout(FlowLayout.LEFT));
         JComboBox<RequestMethods> comboGet = new JComboBox<>(RequestMethods.values());
+        Controller.methodsComboBox = comboGet;
         comboGet.setPreferredSize(new Dimension(80,40));
         getTextSend.add(comboGet);
 
         JTextArea urlAddress = new JTextArea();
+        Controller.urlAddress = urlAddress;
         urlAddress.setPreferredSize(new Dimension(270,40));
         getTextSend.add(urlAddress);
 
@@ -415,9 +418,10 @@ public class InsomniaGUI
         tabs.setOpaque(true);
 
         JComboBox<String> comboBody = new JComboBox<>();
+
         comboBody.setBackground(new Color(46,47,44));
         comboBody.setOpaque(true);
-        comboBody.addItem("Form URL Encoded");
+        comboBody.addItem("Form Data");
         comboBody.addItem("JSON");
         comboBody.addItem("Binary File");
         comboBody.setPreferredSize(new Dimension(100,40));
@@ -476,7 +480,7 @@ public class InsomniaGUI
                     cardLayout.show(requesterCenter,"3");
                 else if(comboBody.getSelectedItem().equals("JSON"))
                     cardLayout.show(requesterCenter,"2");
-                else if(comboBody.getSelectedItem().equals("Form URL Encoded"))
+                else if(comboBody.getSelectedItem().equals("Form Data"))
                     cardLayout.show(requesterCenter,"1");
             }
         });
@@ -499,14 +503,14 @@ public class InsomniaGUI
         panel.add(make);
         make.setMaximumSize(new Dimension(500,40));
 
-        JTextArea name = new JTextArea("name");
+        JTextArea name = new JTextArea();
         name.setPreferredSize(new Dimension(200,30));
         name.setBackground(new Color(46,47,44));
         name.setOpaque(true);
         name.setForeground(Color.GRAY);
         name.setOpaque(true);
 
-        JTextArea value = new JTextArea("value");
+        JTextArea value = new JTextArea();
         value.setPreferredSize(new Dimension(200,30));
         value.setBackground(new Color(46,47,44));
         value.setOpaque(true);
@@ -590,62 +594,32 @@ public class InsomniaGUI
             }
         });
 
-
-        value.addMouseListener(new MouseAdapter() {
+        MouseAdapter mouseAdder = new MouseAdapter() {
             public void mouseClicked(MouseEvent me) {
-                switch (nameOfPanel)
+                ArrayList<JPanel> thisPanel = nameOfPanel.equals("FORM")?getFormList():nameOfPanel.equals("HEADER")?getHeaderList():getQueryList();
+                boolean firstEmpty = true;
+                for(JPanel panel : thisPanel)
                 {
-                    case "FORM":
-                        if (getFormList().size()-1 == getFormList().indexOf(make))
+                    for(Component component : panel.getComponents())
+                    {
+                        if(component instanceof JTextArea)
                         {
-                            adding(panel,make,nameOfPanel);
-                            getFormList().add(make);
-                        }
-                        break;
-                    case "HEADER":
-                        if (getHeaderList().size()-1 == getHeaderList().indexOf(make))
-                        {
-                            adding(panel,make,nameOfPanel);
-                            getHeaderList().add(make);
-                        }
-                        break;
-                    case "QUERY":
-                        if (getQueryList().size()-1 == getQueryList().indexOf(make))
-                        {
-                            adding(panel,make,nameOfPanel);
-                            getQueryList().add(make);
-                        }
-                        break;
-                }
-            }
-        });
+                            JTextArea textArea = (JTextArea) component;
+                            if(textArea.getText().equals(""))
+                            {
 
-        name.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent me) {
+                                if(firstEmpty) firstEmpty = false;
+                                else return;
+                            }
+                        }
+                    }
+                }
                 adding(panel,make,nameOfPanel);
-                switch (nameOfPanel)
-                {
-                    case "FORM":
-                        if (getFormList().size()-1 == getFormList().indexOf(make))
-                        {
-                            getFormList().add(make);
-                        }
-                        break;
-                    case "HEADER":
-                        if (getHeaderList().size()-1 == getHeaderList().indexOf(make))
-                        {
-                            getHeaderList().add(make);
-                        }
-                        break;
-                    case "QUERY":
-                        if (getQueryList().size()-1 == getQueryList().indexOf(make))
-                        {
-                            getQueryList().add(make);
-                        }
-                        break;
-                }
+                thisPanel.add(make);
             }
-        });
+        };
+        value.addMouseListener(mouseAdder);
+        name.addMouseListener(mouseAdder);
     }
 
     /**
@@ -656,6 +630,7 @@ public class InsomniaGUI
      */
     public void delete(JButton waste, JPanel panel, JPanel make)
     {
+        if(panel.getComponents().length<2) return;
         panel.remove(make);
         panel.revalidate();
         panel.repaint();
@@ -1050,14 +1025,17 @@ public class InsomniaGUI
         statuses.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         JButton status = new JButton("OK");
+        Controller.status = status;
         status.setPreferredSize(new Dimension(60,40));
         statuses.add(status);
 
         JButton time = new JButton("S");
+        Controller.time = time;
         time.setPreferredSize(new Dimension(60,40));
         statuses.add(time);
 
         JButton capacity = new JButton("KB");
+        Controller.capacity = capacity;
         capacity.setPreferredSize(new Dimension(60,40));
         statuses.add(capacity);
 
@@ -1089,19 +1067,9 @@ public class InsomniaGUI
 
         responseTop.add(tabsRes);
 
-        messageBody.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout1.show(responseCenter,"1");
-            }
-        });
+        messageBody.addActionListener(e -> cardLayout1.show(responseCenter,"1"));
 
-        header.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout1.show(responseCenter,"2");
-            }
-        });
+        header.addActionListener(e -> cardLayout1.show(responseCenter,"2"));
     }
 
     /**
