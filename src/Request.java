@@ -278,16 +278,34 @@ public class Request implements Serializable {
         }
         if(type.equals("headers"))
         {
-            data = data.replace("=",":").replace("&",";");
-            this.headers = data.substring(0,data.length()-1);
+            try{
+                data = data.replace("=",":").replace("&",";");
+                this.headers = data.substring(0,data.length()-1);
+            }
+            catch (Exception e)
+            {
+                this.headers = "";
+            }
         }
         else if(type.equals("data"))
         {
-            this.data = data.substring(0,data.length()-1);
+            try{
+                this.data = data.substring(0,data.length()-1);
+            }
+            catch (Exception e)
+            {
+                this.data = "";
+            }
         }
         else if(type.equals("query"))
         {
-            this.query = "?" + data.substring(0,data.length()-1);
+            try{
+                this.query = "?" + data.substring(0,data.length()-1);
+            }
+            catch (Exception e)
+            {
+                this.query = "";
+            }
         }
     }
 }
