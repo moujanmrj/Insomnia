@@ -17,7 +17,11 @@ public class Controller {
         Request request = new Request();
         request.setUrl(urlAddress.getText());
         request.setMethod(String.valueOf(methodsComboBox.getSelectedItem()));
-        request.setData(formPanel);
+        request.set(formPanel,"data");
+        request.set(headerPanel,"headers");
+        request.set(queryPanel,"query");
+
+        System.out.println(request.toString());
         request.send();
     }
 }

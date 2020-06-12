@@ -21,11 +21,15 @@ public class Request implements Serializable {
     private String status = "null";
     private String time = "0:00S";
 
+
+
+    private String query = "";
+
     public void send()
     {
         try {
             long startTime = System.currentTimeMillis();
-            URL url = new URL(this.url);
+            URL url = new URL(this.url + this.query);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             //Set settings:
             connection.setRequestMethod(method.name());
@@ -147,6 +151,50 @@ public class Request implements Serializable {
         this.showHeaders = showHeaders;
     }
 
+    public void setMethod(RequestMethods method) {
+        this.method = method;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public String getReceivedHeaders() {
+        return receivedHeaders;
+    }
+
+    public void setReceivedHeaders(String receivedHeaders) {
+        this.receivedHeaders = receivedHeaders;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
     public boolean isFollow() {
         return follow;
     }
@@ -200,7 +248,7 @@ public class Request implements Serializable {
         bufferedOutputStream.close();
     }
 
-    public void setData(JPanel formPanel) {
+    public void set(JPanel formPanel,String type) {
         String data = "";
         ArrayList<JTextArea> texts = new ArrayList<>();
         for(Component c : formPanel.getComponents())
@@ -228,9 +276,18 @@ public class Request implements Serializable {
             if(!text.getText().equals("") && !texts.get(i+1).getText().equals(""))
                 data += text.getText() + "=" + texts.get(i+1).getText() + "&";
         }
-        try{
+        if(type.equals("headers"))
+        {
+            data = data.replace("=",":").replace("&",";");
+            this.headers = data.substring(0,data.length()-1);
+        }
+        else if(type.equals("data"))
+        {
             this.data = data.substring(0,data.length()-1);
         }
-        catch (Exception e){}
+        else if(type.equals("query"))
+        {
+            this.query = "?" + data.substring(0,data.length()-1);
+        }
     }
 }
