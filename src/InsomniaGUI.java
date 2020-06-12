@@ -104,7 +104,7 @@ public class InsomniaGUI
 
         JSplitPane split1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, request, requester);
         JSplitPane split2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, split1, response);
-        split1.setResizeWeight(0.4);
+        split1.setResizeWeight(0.43);
         split2.setResizeWeight(0.6);
 
         frame.add(split2, BorderLayout.CENTER);
@@ -114,6 +114,8 @@ public class InsomniaGUI
         insomniaRequester();
         insomniaRequest();
         insomniaResponse();
+        frame.repaint();
+        frame.revalidate();
     }
 
     /**
@@ -408,7 +410,10 @@ public class InsomniaGUI
 
         JButton send = new JButton("Send");
         send.setPreferredSize(new Dimension(60,40));
-        send.addActionListener(e -> Controller.sendRequest());
+        send.addActionListener(e -> {
+            Thread thread = new Thread(new Controller());
+            thread.start();
+        });
         getTextSend.add(send);
 
         JButton save = new JButton("Save");
@@ -464,6 +469,7 @@ public class InsomniaGUI
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(requesterCenter,"6");
+
             }
         });
 
@@ -1013,6 +1019,7 @@ public class InsomniaGUI
         responseCenter.setOpaque(true);
 
         JPanel messageBodyPanel = new JPanel();
+
         makeMessageBodyPanel(messageBodyPanel);
 
         JPanel headerPanel = new JPanel();
@@ -1092,7 +1099,7 @@ public class InsomniaGUI
         headerTop.setOpaque(true);
         panel.add(headerTop, BorderLayout.NORTH);
 
-        JLabel nameVal = new JLabel("  NAME                                                                        VALUE                                     ");
+        JLabel nameVal = new JLabel("  NAME                                                                        VALUE                              ");
         nameVal.setFont(new Font("Arial",Font.PLAIN,13));
         nameVal.setBackground(new Color(46,47,44));
         nameVal.setOpaque(true);
@@ -1128,13 +1135,17 @@ public class InsomniaGUI
      */
     public void makeMessageBodyPanel(JPanel panel)
     {
-        panel.setLayout(new BorderLayout());
-        JPanel body = new JPanel();
-        body.setLayout(new FlowLayout());
-        body.setBackground(new Color(46,47,44));
-        body.setOpaque(true);
-        body.setForeground(Color.gray);
-        body.setOpaque(true);
-        panel.add(body,BorderLayout.NORTH);
+        panel.setLayout(new GridLayout(1,1));
+        JTextArea messageBodyText = new JTextArea();
+        messageBodyText.setEditable(false);
+        messageBodyText.setBackground(new Color(46,47,44));
+        messageBodyText.setForeground(Color.WHITE);
+        JScrollPane messageBodyScroll = new JScrollPane(messageBodyText , ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        messageBodyText.setFont(new Font("Arial", Font.PLAIN, 14));
+        messageBodyText.setLineWrap(true);
+        messageBodyText.setWrapStyleWord(true);
+        panel.add(messageBodyScroll);
+        Controller.messageBodyText = messageBodyText;
     }
+
 }
