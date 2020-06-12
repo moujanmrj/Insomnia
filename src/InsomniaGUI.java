@@ -383,6 +383,11 @@ public class InsomniaGUI
         requesterCenter.add(bearerPanel,"4");
         requesterCenter.add(queryPanel,"5");
         requesterCenter.add(headerPanel, "6");
+        Controller.formPanel = formPanel;
+        Controller.jsonPanel = jsonPanel;
+        Controller.binaryPanel = binaryPanel;
+        Controller.headerPanel = headerPanel;
+        Controller.queryPanel = queryPanel;
 
         JPanel requesterTop = new JPanel();
         requesterTop.setLayout(new GridLayout(2,1));

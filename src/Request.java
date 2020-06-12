@@ -1,6 +1,9 @@
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +54,6 @@ public class Request implements Serializable {
                 connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
                 BufferedOutputStream request = new BufferedOutputStream(connection.getOutputStream());
                 bufferOutFormData(body, boundary, request);
-
             }
 
             status = connection.getResponseCode() + " " + connection.getResponseMessage();
@@ -196,5 +198,39 @@ public class Request implements Serializable {
         bufferedOutputStream.write(("--" + boundary + "--\r\n").getBytes());
         bufferedOutputStream.flush();
         bufferedOutputStream.close();
+    }
+
+    public void setData(JPanel formPanel) {
+        String data = "";
+        ArrayList<JTextArea> texts = new ArrayList<>();
+        for(Component c : formPanel.getComponents())
+        {
+            JPanel panel = (JPanel) c;
+            for(Component component : panel.getComponents())
+            {
+                if(component instanceof JTextArea)
+                {
+                    texts.add((JTextArea) component);
+                }
+                if(component instanceof JRadioButton)
+                {
+                    JRadioButton jRadioButton = (JRadioButton) component;
+                    if(!jRadioButton.isSelected())
+                    {
+                        texts.remove(texts.size()-1);
+                        texts.remove(texts.size()-1);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < texts.size(); i+=2) {
+            JTextArea text = texts.get(i);
+            if(!text.getText().equals("") && !texts.get(i+1).getText().equals(""))
+                data += text.getText() + "=" + texts.get(i+1).getText() + "&";
+        }
+        try{
+            this.data = data.substring(0,data.length()-1);
+        }
+        catch (Exception e){}
     }
 }
