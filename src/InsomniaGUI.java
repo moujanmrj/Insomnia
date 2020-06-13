@@ -238,7 +238,12 @@ public class InsomniaGUI
         toggleSidebar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ///////////////////////////////////////////////////////////////////////////////////////////////
+                request.setVisible(!request.isVisible());
+                request.repaint();
+                request.revalidate();
+                frame.repaint();
+                frame.revalidate();
+                frame.setVisible(true);
             }
         });
         toggleSidebar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
@@ -1040,17 +1045,17 @@ public class InsomniaGUI
 
         JButton status = new JButton("OK");
         Controller.status = status;
-        status.setPreferredSize(new Dimension(60,40));
+        status.setPreferredSize(new Dimension(100,40));
         statuses.add(status);
 
         JButton time = new JButton("S");
         Controller.time = time;
-        time.setPreferredSize(new Dimension(60,40));
+        time.setPreferredSize(new Dimension(100,40));
         statuses.add(time);
 
         JButton capacity = new JButton("KB");
         Controller.capacity = capacity;
-        capacity.setPreferredSize(new Dimension(60,40));
+        capacity.setPreferredSize(new Dimension(100,40));
         statuses.add(capacity);
 
         responseTop.add(statuses);
@@ -1099,13 +1104,13 @@ public class InsomniaGUI
         headerTop.setOpaque(true);
         panel.add(headerTop, BorderLayout.NORTH);
 
-        JLabel nameVal = new JLabel("  NAME                                                                        VALUE                              ");
-        nameVal.setFont(new Font("Arial",Font.PLAIN,13));
-        nameVal.setBackground(new Color(46,47,44));
-        nameVal.setOpaque(true);
-        nameVal.setForeground(Color.gray);
-        nameVal.setOpaque(true);
-        headerTop.add(nameVal);
+//        JLabel nameVal = new JLabel("  NAME                                                                        VALUE                              ");
+//        nameVal.setFont(new Font("Arial",Font.PLAIN,13));
+//        nameVal.setBackground(new Color(46,47,44));
+//        nameVal.setOpaque(true);
+//        nameVal.setForeground(Color.gray);
+//        nameVal.setOpaque(true);
+//        headerTop.add(nameVal);
 
         JButton copy = new JButton("Copy to Clipboard");
         copy.setBackground(new Color(46,47,44));
@@ -1114,12 +1119,14 @@ public class InsomniaGUI
         copy.setOpaque(true);
         headerTop.add(copy);
 
-        JTable headerTable = new JTable();
+        String[] columnNames = { "Key", "Value"};
+        HeadersTable headerTable = new HeadersTable();
         headerTable.setBackground(new Color(46,47,44));
         headerTable.setOpaque(true);
         headerTable.setForeground(Color.gray);
         headerTable.setOpaque(true);
         panel.add(headerTable,BorderLayout.CENTER);
+
 
         copy.addActionListener(new ActionListener() {
             @Override

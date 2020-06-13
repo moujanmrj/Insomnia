@@ -12,6 +12,7 @@ public class Controller implements Runnable{
     public static JPanel headerPanel;
     public static JPanel queryPanel;
     public static JTextArea messageBodyText;
+    public static HeadersTable responseHeaderPanel;
 
     public static void sendRequest()
     {
@@ -26,6 +27,8 @@ public class Controller implements Runnable{
         time.setText(request.getTime());
         status.setText(request.getStatus());
         messageBodyText.setText(request.getAnswer());
+        responseHeaderPanel.reset();
+        responseHeaderPanel.setHeaders(request.getReceivedHeaders());
     }
 
     @Override
