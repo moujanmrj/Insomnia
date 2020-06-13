@@ -10,7 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
- * this class shows received headers
+ * this class is the logic of the program
+ * for request
  *
  * @author Moujan Mirjalili
  * @version  2020
@@ -258,7 +259,9 @@ public class Request implements Serializable {
     }
 
 
-
+    /**
+     *it writes form data
+     */
     private void bufferOutFormData(HashMap<String, String> body, String boundary, BufferedOutputStream bufferedOutputStream) throws IOException {
         for (String key : body.keySet()) {
             bufferedOutputStream.write(("--" + boundary + "\r\n").getBytes());

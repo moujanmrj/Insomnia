@@ -1,8 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
-
+/**
+ * this class shows received headers
+ *
+ * @author Moujan Mirjalili
+ * @version  2020
+ */
 public class HeadersTable extends JPanel{
     JPanel headerPanel;
+
+    /**
+     * constructor
+     */
     public HeadersTable()
     {
         super();
@@ -14,6 +23,12 @@ public class HeadersTable extends JPanel{
         headerPanel = panel;
         Controller.responseHeaderPanel = this;
     }
+
+    /**
+     * adds header
+     * @param key key
+     * @param value value
+     */
     public void addHeader(String key , String value)
     {
         JPanel jPanel = new JPanel();
@@ -29,6 +44,9 @@ public class HeadersTable extends JPanel{
         headerPanel.add(jPanel);
     }
 
+    /**
+     * delets previous headers
+     */
     public void reset(){
         for(Component component : headerPanel.getComponents())
         {
@@ -36,6 +54,10 @@ public class HeadersTable extends JPanel{
         }
     }
 
+    /**
+     * sets header with add header
+     * @param receivedHeaders header
+     */
     public void setHeaders(String receivedHeaders) {
         for(String header : receivedHeaders.split(";;"))
         {
