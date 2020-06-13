@@ -7,7 +7,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
-
+/**
+ * this class is the logic of the program
+ * gets commands and makes request
+ *
+ * @author Moujan Mirjalili
+ * @version  2020
+ */
 public class Jurl {
     public static void main(String[] args)  {
         if(args.length == 0)
@@ -146,6 +152,14 @@ public class Jurl {
 
         request.send();
     }
+
+    /**
+     * converts command and arg to their second and third letter and
+     * then compares them
+     * @param arg arg
+     * @param command command
+     * @return the comparison
+     */
     private static boolean isThis(String arg , String command)
     {
         return arg.toLowerCase().equals(command) || arg.toLowerCase().equals(command.substring(1,3));

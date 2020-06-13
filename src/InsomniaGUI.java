@@ -1,9 +1,16 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Scanner;
 
 /**
  * this class has all the gui and some actions but it's gonna change into multiple classes in the future
@@ -15,12 +22,15 @@ import java.util.ArrayList;
 public class InsomniaGUI
 {
     //the main frame
-    private JFrame frame;
+    public JFrame frame;
     //the three main panels
     private JPanel request, requester, response;
     private CardLayout cardLayout, cardLayout1;
     //these show if the app options are on or off
-    private boolean hiding = false, following = false;
+    public boolean hiding = false, following = false;
+    //JLabel for image preview
+    private   JLabel imagePreview;
+
 
 
     private ArrayList<JPanel> headerList = new ArrayList<>();
@@ -51,6 +61,8 @@ public class InsomniaGUI
      */
     public ArrayList<JPanel> getFormList() { return formList; }
 
+    JPanel requestsCenter;
+
     /**
      * sets if the system is to hide in the tray
      * @param hiding tray system boolean
@@ -79,7 +91,12 @@ public class InsomniaGUI
      */
     public InsomniaGUI()
     {
+        try {
+            loadSettings();
+        } catch (IOException ignored) {
+        }
         frame = new JFrame("Insomnia");
+        Controller.insomniaGUI = this;
         frame.setLayout(new BorderLayout());
         frame.setVisible(true);
         frame.setLocation(60,70);
@@ -116,6 +133,20 @@ public class InsomniaGUI
         insomniaResponse();
         frame.repaint();
         frame.revalidate();
+    }
+
+    private void loadSettings() throws IOException {
+        File file = new File("Settings");
+        try {
+            Scanner fs = new Scanner(file);
+            following = fs.next().equals("true");
+            hiding = fs.next().equals("true");
+            fs.close();
+        } catch (FileNotFoundException e) {
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(false+" " + false);
+            fileWriter.close();
+        }
     }
 
     /**
@@ -169,6 +200,14 @@ public class InsomniaGUI
                             followRedirect.setSelected(false);
                             setFollowing(false);
                         }
+                        File file = new  File("Settings");
+                        try {
+                            FileWriter fileWriter = new FileWriter(file);
+                            fileWriter.write(following+" " + hiding);
+                            fileWriter.close();
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
                     }
                 });
                 systemTray.addActionListener(new ActionListener() {
@@ -183,6 +222,14 @@ public class InsomniaGUI
                         {
                             systemTray.setSelected(false);
                             setHiding(false);
+                        }
+                        File file = new  File("Settings");
+                        try {
+                            FileWriter fileWriter = new FileWriter(file);
+                            fileWriter.write(following+" " + hiding);
+                            fileWriter.close();
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
                         }
                     }
                 });
@@ -422,6 +469,19 @@ public class InsomniaGUI
         getTextSend.add(send);
 
         JButton save = new JButton("Save");
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Request request = new Request();
+                request.setUrl(urlAddress.getText());
+                request.setMethod(String.valueOf(comboGet.getSelectedItem()));
+                request.set(formPanel,"data");
+                request.set(headerPanel,"headers");
+                request.set(queryPanel,"query");
+                request.setFollow(following);
+                createRequests(comboGet.getSelectedItem().toString(),urlAddress.getText().replace("http://",""),requestsCenter,request);
+            }
+        });
         save.setPreferredSize(new Dimension(60,40));
         getTextSend.add(save);
 
@@ -467,6 +527,7 @@ public class InsomniaGUI
         header.setOpaque(true);
         header.setPreferredSize(new Dimension(70,40));
         tabs.add(header);
+
 
         requesterTop.add(tabs);
 
@@ -853,7 +914,7 @@ public class InsomniaGUI
         newReq.add(newRequest);
 
 
-        JPanel requestsCenter = new JPanel();
+        requestsCenter = new JPanel();
         requestsCenter.setBackground(new Color(46,47,44));
         requestsCenter.setOpaque(true);
         requestsCenter.setForeground(Color.white);
@@ -906,7 +967,7 @@ public class InsomniaGUI
                     create.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            createRequests(comboGet,newReqText,requestsCenter);
+                            createRequests(Objects.requireNonNull(comboGet.getSelectedItem()).toString(),newReqText.getText(),requestsCenter,null);
                             newReqFrame.dispose();
                         }
                     });
@@ -944,15 +1005,15 @@ public class InsomniaGUI
      * @param textName name of the request
      * @param requestsCenter is the box panel we're adding requests to
      */
-    public void createRequests(JComboBox<String> comboBox, JTextArea textName, JPanel requestsCenter)
+    public void createRequests(String comboBox, String textName, JPanel requestsCenter,Request request)
     {
 
         BoxLayout boxlayout1 = new BoxLayout(requestsCenter, BoxLayout.Y_AXIS);
         requestsCenter.setLayout(boxlayout1);
 
 
-        String type = String.valueOf(comboBox.getSelectedItem());
-        String name = textName.getText();
+        String type = comboBox;
+        String name = textName;
         Requests theNewRequest = new Requests(type, name);
         getRequestsOfInsomnia().add(theNewRequest);
 
@@ -966,6 +1027,34 @@ public class InsomniaGUI
 
         JButton theName = new JButton(name);
         JButton theType = new JButton(type);
+
+        ActionListener sendRequest = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Thread(() -> {
+                    if(request == null) return;
+                    request.send();
+                    Controller.time.setText(request.getTime());
+                    Controller.status.setText(request.getStatus());
+                    Controller.messageBodyText.setText(request.getAnswer());
+                    Controller.responseHeaderPanel.reset();
+                    Controller.responseHeaderPanel.setHeaders(request.getReceivedHeaders());
+                    if(request.getImg() != null)
+                    {
+                        Controller.previewImage.setIcon(new ImageIcon(request.getImg()));
+                    }
+                    else
+                    {
+                        Controller.previewImage.setIcon(null);
+                    }
+                    frame.setVisible(true);
+                    frame.repaint();
+                    frame.revalidate();
+                }).start();
+            }
+        };
+        theName.addActionListener(sendRequest);
+        theType.addActionListener(sendRequest);
 
         theName.setBackground(new Color(46,47,44));
         theName.setOpaque(true);
@@ -1033,8 +1122,16 @@ public class InsomniaGUI
         messageBodyPanel.setBackground(new Color(46,47,44));
         headerPanel.setBackground(new Color(46,47,44));
 
+        JPanel previewPanel = new JPanel();
+        previewPanel.setBackground(Color.DARK_GRAY);
+        previewPanel.setLayout(new FlowLayout());
+        imagePreview = new JLabel();
+        previewPanel.add(imagePreview);
+        Controller.previewImage = imagePreview;
+
         responseCenter.add(messageBodyPanel,"1");
         responseCenter.add(headerPanel, "2");
+        responseCenter.add(previewPanel,"3");
 
         JPanel responseTop = new JPanel();
         responseTop.setLayout(new GridLayout(2,1));
@@ -1084,11 +1181,21 @@ public class InsomniaGUI
         header.setPreferredSize(new Dimension(100,40));
         tabsRes.add(header);
 
+        JButton preview = new JButton("Preview");
+        preview.setBackground(new Color(46,47,44));
+        preview.setOpaque(true);
+        preview.setForeground(Color.white);
+        preview.setOpaque(true);
+        preview.setPreferredSize(new Dimension(100,40));
+        tabsRes.add(preview);
+
         responseTop.add(tabsRes);
 
         messageBody.addActionListener(e -> cardLayout1.show(responseCenter,"1"));
 
         header.addActionListener(e -> cardLayout1.show(responseCenter,"2"));
+
+        preview.addActionListener(e -> cardLayout1.show(responseCenter,"3"));
     }
 
     /**
@@ -1113,6 +1220,7 @@ public class InsomniaGUI
 //        headerTop.add(nameVal);
 
         JButton copy = new JButton("Copy to Clipboard");
+
         copy.setBackground(new Color(46,47,44));
         copy.setOpaque(true);
         copy.setForeground(Color.white);
@@ -1131,7 +1239,9 @@ public class InsomniaGUI
         copy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //////////////////////////////////////////////////////////////////
+                StringSelection stringSelection = new StringSelection(Controller.receivedHeaders.replace("::","\t").replace(";;","\n"));
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(stringSelection, null);
             }
         });
     }

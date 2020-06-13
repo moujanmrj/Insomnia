@@ -37,11 +37,10 @@ public class HeadersTable extends JPanel{
     }
 
     public void setHeaders(String receivedHeaders) {
-        System.out.println(receivedHeaders);
-        for(String header : receivedHeaders.split(";"))
+        for(String header : receivedHeaders.split(";;"))
         {
-            String key = header.split(":")[0];
-            String value = header.split(":")[1];
+            String key = header.split("::")[0];
+            String value = header.split("::")[1];
             addHeader(key,value);
         }
     }

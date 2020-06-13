@@ -1,5 +1,7 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -7,7 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * this class shows received headers
+ *
+ * @author Moujan Mirjalili
+ * @version  2020
+ */
 public class Request implements Serializable {
     private String url = "";
     private RequestMethods method = RequestMethods.GET;
@@ -20,11 +27,14 @@ public class Request implements Serializable {
     private String receivedHeaders = "";
     private String status = "null";
     private String time = "0:00S";
-
+    private BufferedImage img = null;
 
 
     private String query = "";
 
+    /**
+     * this method sends request
+     */
     public void send()
     {
         try {
@@ -33,6 +43,7 @@ public class Request implements Serializable {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             //Set settings:
             connection.setRequestMethod(method.name());
+            System.out.println(follow);
             connection.setInstanceFollowRedirects(follow);
             connection.setDoOutput(true);
             connection.setUseCaches(false);
@@ -71,37 +82,52 @@ public class Request implements Serializable {
 
 
             for(Map.Entry<String, List<String>> entry : connection.getHeaderFields().entrySet()) {
-                if(showHeaders) System.out.println(entry.getKey() + ":" + entry.getValue());
-                receivedHeaders += entry.getKey() + ":" + entry.getValue() + ";";
+                if(showHeaders) System.out.println(entry.getKey() + "::" + entry.getValue());
+                receivedHeaders += entry.getKey() + "::" + entry.getValue() + ";;";
             }
-            if(receivedHeaders.length()>0)
-                receivedHeaders = receivedHeaders.substring(0,receivedHeaders.length()-1);
+            if(receivedHeaders.length()>1)
+                receivedHeaders = receivedHeaders.substring(0,receivedHeaders.length()-2);
 
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(connection.getInputStream());
-            answer = new String(bufferedInputStream.readAllBytes());
-            try
-            {
-                if(output.equals(""))
+            try{
+                if(connection.getHeaderField("Content-Type").toLowerCase().contains("png"))
                 {
-                    System.out.println(answer);
-                }
-                else
-                {
-                    if (!output.contains(".") && output.toLowerCase().contains("output_"))
-                        output += connection.getHeaderField("Content-Type").toLowerCase().contains("png") ? ".png" : ".html";
-
-                    FileOutputStream file = new FileOutputStream(new File(output));
-                    InputStream inputStream = connection.getInputStream();
-                    byte[] buffer = new byte[1024];
-                    int bufferLength;
-                    while ((bufferLength = inputStream.read(buffer)) > 0) {
-                        file.write(buffer , 0 , bufferLength);
+                    img = null;
+                    try {
+                        img = ImageIO.read(url);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    file.close();
+                }
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(connection.getInputStream());
+                answer = new String(bufferedInputStream.readAllBytes());
+                try
+                {
+                    if(output.equals(""))
+                    {
+                        System.out.println(answer);
+                    }
+                    else
+                    {
+                        if (!output.contains(".") && output.toLowerCase().contains("output_"))
+                            output += connection.getHeaderField("Content-Type").toLowerCase().contains("png") ? ".png" : ".html";
+
+                        FileOutputStream file = new FileOutputStream(new File(output));
+                        InputStream inputStream = connection.getInputStream();
+                        byte[] buffer = new byte[1024];
+                        int bufferLength;
+                        while ((bufferLength = inputStream.read(buffer)) > 0) {
+                            file.write(buffer , 0 , bufferLength);
+                        }
+                        file.close();
+                    }
+                }
+                catch (Exception ignored)
+                {
                 }
             }
-            catch (Exception ignored)
+            catch (Exception e)
             {
+                System.out.println("No Body!");
             }
 
 
@@ -165,6 +191,14 @@ public class Request implements Serializable {
 
     public String getReceivedHeaders() {
         return receivedHeaders;
+    }
+
+    public BufferedImage getImg() {
+        return img;
+    }
+
+    public void setImg(BufferedImage img) {
+        this.img = img;
     }
 
     public void setReceivedHeaders(String receivedHeaders) {
